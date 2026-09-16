@@ -1,4 +1,5 @@
 ---
+import PageGalleryHero from '../components/PageGalleryHero.astro';
 import BlogPost from '../components/BlogPost.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import ContactForm from '../components/ContactForm';
@@ -13,6 +14,7 @@ export async function getStaticPaths() {
 const {entry,post}=Astro.props;
 const slug=Astro.params.slug!;
 const title=shortTitle(entry.title);
+const galleryHero=!post && !['privacy-policy','complaints','careers','events'].includes(slug);
 let html=await renderBody(entry);
 // The lead photograph has its own full-width placement; do not repeat it in the article.
 if(!post && entry.heroImage) html=html.replace(/<p><img\b[^>]*><\/p>/, '');
@@ -20,6 +22,8 @@ html=html.replace(/<h4>([\s\S]*?)<\/h4>/g, (match, body) => body.replace(/<[^>]+
 if(slug==='our-team') html=html.replace(/<ul><li><p>Expand Bio<\/p>([\s\S]*?)<\/li><\/ul>/g, '<details class="bio-details"><summary>Expand Bio</summary>$1</details>');
 const firstHeading=html.match(/^<h2>(.*?)<\/h2>/);
 if(firstHeading && firstHeading[1].replace(/<[^>]+>/g,'').trim().toLowerCase()===title.toLowerCase()) html=html.slice(firstHeading[0].length);
+let heroSubtitle='';
+if(galleryHero){const lead=html.match(/^<h2>(.*?)<\/h2>/);if(lead){heroSubtitle=lead[1].replace(/<[^>]+>/g,'');html=html.slice(lead[0].length);}}
 const settings=await reader.singletons.settings.readOrThrow();
 const source=inventory.find(p=>p.slug===slug);
 const quizUrl=slug==='financial-reflection'?settings.quizUrl:slug==='financial-quiz'?settings.roadmapUrl:null;
@@ -27,11 +31,7 @@ const related: Record<string,string[][]>={seasons:[['Sowing','/sowing'],['Growin
 ---
 <SiteLayout title={entry.title} description={entry.description} image={entry.heroImage}>
   {post ? <BlogPost title={title} html={html} slug={slug} date={'date' in entry && typeof entry.date === 'string' ? entry.date : null} author={'author' in entry && typeof entry.author === 'string' ? entry.author : null} /> : <>
-  <header class="page-hero section-shell"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span>{post && <><a href="/insights">Insights</a><span aria-hidden="true">/</span></>}<span>{title}</span></nav><h1>{title}</h1>
-    {post && 'date' in entry && <p class="article-meta">{entry.date ? new Date(entry.date+'T12:00:00Z').toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}) : ''} · {'author' in entry ? entry.author : 'Red Barn Investment Counsel'}</p>}
-    {related[slug] && <nav class="related-links" aria-label={`${title} pages`}>{related[slug].map(([label,url])=><a href={url}>{label} ↗</a>)}</nav>}
-    {!post && entry.heroImage && <img class="page-lead-image" src={entry.heroImage} alt={entry.heroAlt||''} width="1500" height="850" fetchpriority="high" />}
-  </header>
+  {galleryHero ? <PageGalleryHero title={title} subtitle={heroSubtitle} image={entry.heroImage} alt={entry.heroAlt} links={related[slug]} /> : <header class="page-hero section-shell"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>{title}</span></nav><h1>{title}</h1>{entry.heroImage && <img class="page-lead-image" src={entry.heroImage} alt={entry.heroAlt||''} width="1500" height="850" fetchpriority="high" />}</header>}
   <article class="page-content" set:html={html} />
   </>}
   {['start-here','contact'].includes(slug) && <section class="page-contact"><h2>Book an intro call</h2><ContactForm client:load email={settings.email} /></section>}
