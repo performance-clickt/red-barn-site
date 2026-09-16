@@ -1,4 +1,5 @@
 ---
+import StartHereContent from '../components/StartHereContent.astro';
 import PageHero from '../components/PageHero.astro';
 import BlogPost from '../components/BlogPost.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
@@ -32,9 +33,9 @@ const related: Record<string,string[][]>={seasons:[['Sowing','/sowing'],['Growin
 <SiteLayout title={entry.title} description={entry.description} image={entry.heroImage}>
   {post ? <BlogPost title={title} html={html} slug={slug} date={'date' in entry && typeof entry.date === 'string' ? entry.date : null} author={'author' in entry && typeof entry.author === 'string' ? entry.author : null} /> : <>
   {galleryHero ? <PageHero title={title} subtitle={heroSubtitle} image={entry.heroImage} alt={entry.heroAlt} links={related[slug]} /> : <header class="page-hero section-shell"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>{title}</span></nav><h1>{title}</h1>{entry.heroImage && <img class="page-lead-image" src={entry.heroImage} alt={entry.heroAlt||''} width="1500" height="850" fetchpriority="high" />}</header>}
-  <article class="page-content" set:html={html} />
+  {slug==='start-here' ? <StartHereContent html={html} image={entry.heroImage} alt={entry.heroAlt} email={settings.email}/> : <article class="page-content" set:html={html} />}
   </>}
-  {['start-here','contact'].includes(slug) && <section class="page-contact"><h2>Book an intro call</h2><ContactForm client:load email={settings.email} /></section>}
+  {slug==='contact' && <section class="page-contact"><h2>Book an intro call</h2><ContactForm client:load email={settings.email} /></section>}
   {quizUrl && <section class="quiz-section section-shell" aria-label="Financial reflection"><a class="button button-primary" href={quizUrl} target="_blank" rel="noopener noreferrer">{slug==='financial-reflection'?'Start your Financial Values Reflection':'Explore your Financial Freedom Roadmap'} <span aria-hidden="true">↗</span></a><p class="quiz-launch-note">Opens in a new window.</p></section>}
   {source?.videos.map(v=><div class="section-shell"><SourceVideo url={v.video.alexandriaUrl.replace('{variant}','playlist.m3u8')} poster={v.thumbnail.assetUrl} title={`${title} — video`} /></div>)}
 </SiteLayout>

@@ -1,0 +1,41 @@
+---
+import {load} from 'cheerio';
+import ContactForm from './ContactForm';
+interface Props{html:string;image?:string|null;alt?:string|null;email:string}
+const {html,image,alt,email}=Astro.props;
+const $=load(html,null,false);
+const headings=$('h4');
+const intro=headings.first().html()||'';
+const fitTitle=headings.eq(1).text();
+const fitLead=headings.eq(2).text();
+const processTitle=headings.eq(3).text();
+const fit=$('ul').eq(0).children('li').toArray().map(el=>$(el).html()||'');
+const steps=$('ul').eq(1).children('li').toArray().map(el=>$(el).html()||'');
+const processIntro=headings.eq(3).next('p').html()||'';
+---
+<div class="start-editorial">
+  <section class="start-intro">
+    <div><p class="start-lead" set:html={intro}/></div>
+    {image && <img src={image} alt={alt||''} width="1000" height="700" fetchpriority="high" />}
+  </section>
+  <section class="start-fit">
+    <div class="fit-heading"><h2>{fitTitle}</h2><p>{fitLead}</p></div>
+    <ul>{fit.map(item=><li set:html={item}/>)}</ul>
+  </section>
+  <section class="start-process">
+    <h2>{processTitle}</h2><p class="process-intro" set:html={processIntro}/>
+    <ol>{steps.map((item,i)=><li><span class="step-number" aria-hidden="true" data-step={String(i+1).padStart(2,'0')}></span><div set:html={item}/></li>)}</ol>
+  </section>
+  <section class="start-connect"><div><h2>Book an<br/>intro call.</h2><p>A first conversation about what matters to you.</p></div><div class="start-form"><ContactForm client:load email={email}/></div></section>
+</div>
+<style is:global>
+.start-editorial{width:88%;max-width:1120px;margin:0 auto}
+.start-intro{display:grid;grid-template-columns:1fr 1.1fr;gap:8%;align-items:center;padding:40px 0 70px}
+.start-intro img{width:100%;height:340px;object-fit:cover}
+.start-lead{font-family:'Work Sans',sans-serif;font-size:clamp(25px,2.8vw,37px);line-height:1.3;letter-spacing:-.03em;max-width:440px}.start-lead em{font-style:normal;color:var(--red)}
+.start-fit{padding:20px 0 75px}.fit-heading{margin-bottom:30px}.start-editorial h2{font-size:clamp(2rem,3.5vw,3.7rem);line-height:1.1}.fit-heading>p{margin-top:14px;color:var(--muted);font-size:14px}
+.start-fit ul{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;padding:0;list-style:none}.start-fit li{border-top:2px solid var(--red);padding-top:24px;font-size:15px;color:var(--muted)}.start-fit strong{display:block;font-family:'Work Sans',sans-serif;font-weight:500;font-size:23px;line-height:1.2;color:var(--ink);margin-bottom:14px}
+.start-process{background:var(--light);padding:48px;margin-bottom:80px}.process-intro{margin:20px 0 36px;max-width:560px;font-size:15px;color:var(--muted)}.start-process ol{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;list-style:none;padding:0;margin:0}.step-number:before{content:attr(data-step)}.step-number{display:block;font-family:'Work Sans',sans-serif;color:var(--red);font-size:38px;line-height:1;margin-bottom:24px}.start-process li{font-size:14px}.start-process strong{display:block;font-family:'Work Sans',sans-serif;font-size:20px;font-weight:500;margin-bottom:12px}
+.start-connect{display:grid;grid-template-columns:.8fr 1.2fr;gap:9%;padding:0 0 70px}.start-connect h2{color:var(--red);font-size:clamp(2.5rem,4.5vw,4.8rem)}.start-connect>div>p{font-size:16px;max-width:260px;margin-top:22px}.start-form{background:white;padding:32px;border:1px solid var(--line)}
+@media(max-width:760px){.start-editorial{width:86%}.start-intro{grid-template-columns:1fr;gap:28px;padding:24px 0 44px}.start-intro img{height:250px}.start-lead{font-size:27px}.start-fit{padding:10px 0 44px}.start-fit ul{grid-template-columns:1fr;gap:24px}.start-fit li{padding-top:18px}.start-fit strong{font-size:21px;margin-bottom:8px}.start-process{padding:28px 22px;margin-bottom:44px}.start-process ol{grid-template-columns:1fr;gap:30px}.start-process li{display:grid;grid-template-columns:42px 1fr;gap:16px}.step-number{font-size:28px;margin:3px 0 0}.start-connect{grid-template-columns:1fr;gap:26px;padding-bottom:40px}.start-connect h2 br{display:none}.start-form{padding:22px}.start-connect>div>p{max-width:none}}
+</style>
