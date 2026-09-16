@@ -9,7 +9,13 @@ for(const p of inventory){
  const file=path.join('dist',route,'index.html');
  let html;try{html=await fs.readFile(file,'utf8')}catch{errors.push({route,error:'Missing output page'});continue;}
  const $=cheerio.load(html);$('script,style').remove();const text=normalize($('main').text());
- for(const block of p.sourceBlocks){
+ // Approved cleanup: About is consolidated into Our Story; Contact's imported placeholder copy is replaced.
+ if(p.slug==='about'&&!$('meta[http-equiv=refresh]').attr('content')?.includes('/our-story/'))errors.push({route,error:'About redirect missing'});
+ if(p.slug==='contact'){
+  if(/email@example\.com|555-555|storage option/.test($('main').text()))errors.push({route,error:'Contact placeholder remains'});
+  if(!$('main a[href="mailto:info@redbarninvestmentcounsel.ca"]').length)errors.push({route,error:'Contact email missing'});
+ }
+ for(const block of (['about','contact'].includes(p.slug)?[]:p.sourceBlocks)){
   if(normalize(block).length<60)continue;
   blocks++;
   // Homepage CTA was intentionally rewritten; its invitation sentence is retained.

@@ -1,0 +1,12 @@
+---
+import ContactForm from './ContactForm';
+interface Props {html:string;email:string;phone:string;address:string}
+const {html,email,phone,address}=Astro.props;
+---
+<section class="contact-editorial">
+ <div class="contact-details"><div class="contact-lead" set:html={html}/><dl><div><dt>Email us</dt><dd><a href={`mailto:${email}`}>{email}</a></dd></div><div><dt>Call us</dt><dd><a href={`tel:${phone.replace(/[^\d+]/g,'')}`}>{phone}</a></dd></div><div><dt>Visit</dt><dd class="contact-address">{address}</dd></div></dl></div>
+ <div class="contact-panel"><h2>Your next chapter.</h2><p>A first conversation about what matters to you.</p><ContactForm client:load email={email}/></div>
+</section>
+<style>
+.contact-editorial{width:88%;max-width:1120px;margin:auto;display:grid;grid-template-columns:1fr 1.1fr;gap:8%;padding:44px 0 80px}.contact-lead{font-size:22px;line-height:1.65}.contact-details dl{margin-top:40px}.contact-details dl>div{padding:22px 0;border-top:1px solid var(--line)}dt{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:10px}dd{margin:0;font-size:18px}dd a{overflow-wrap:anywhere;color:var(--red)}.contact-address{white-space:pre-line}.contact-panel{background:var(--light);padding:36px}.contact-panel h2{color:var(--red);font-size:36px;line-height:1.15}.contact-panel>p{margin:16px 0 28px;font-size:15px}@media(max-width:760px){.contact-editorial{width:86%;grid-template-columns:1fr;gap:32px;padding:28px 0 40px}.contact-lead{font-size:20px}.contact-panel{padding:24px}.contact-panel h2{font-size:30px}}
+</style>
