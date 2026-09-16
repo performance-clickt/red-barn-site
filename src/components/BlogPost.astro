@@ -1,0 +1,50 @@
+---
+import { load } from 'cheerio';
+import { reader, shortTitle } from '../lib/content';
+interface Props { title: string; html: string; slug: string; date?: string | null; author?: string | null; }
+const {title,html,slug,date,author}=Astro.props;
+const $=load(html,null,false);
+// The old multi-paragraph navigation is invalid Markdown and renders as text.
+$('p').each((_,el)=>{const p=$(el);if(p.text().trim()==='[' && /^(Previous|Next)$/.test(p.next().text().trim())){p.nextAll().remove();p.remove();}});
+// Remove unmatched formatting delimiters left by the migration, preserving prose.
+$('*').contents().each((_,node)=>{if(node.type==='text')node.data=node.data.replace(/\*\*/g,'').replace(/(^|[\s])_(?=\S)/g,'$1');});
+// Replace imported Squarespace chrome with the site's article navigation.
+$('a').each((_,el)=>{const a=$(el);if(a.find('h2').length && /^\s*(Previous|Next)\b/.test(a.text())) a.remove();});
+$('p').each((_,el)=>{const p=$(el);const text=p.text().trim();if((!text && !p.find('img,video,iframe').length) || /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{1,2}$/.test(text) || (author && text===author && p.find('a[href*="?author="]').length))p.remove();});
+// Legacy all-bold prose reads as body copy; retain shorter and inline emphasis.
+$('p,li').each((_,el)=>{const p=$(el);const strong=p.children('strong');if(strong.length===1 && p.text().trim()===strong.text().trim() && p.text().trim().length>120)strong.replaceWith(strong.html()||'');});
+// Consolidate imported reading links so the article opens with its own story.
+const resources:string[]=[];
+const resourceParagraphs=$('p').filter((_,el)=>{const p=$(el);const a=p.children('a');return a.length===1 && p.text().trim()===a.text().trim() && /^(https?:|\/files\/)/.test(a.attr('href')||'');});
+const groupedResources=resourceParagraphs.filter((_,el)=>resourceParagraphs.is($(el).prev())||resourceParagraphs.is($(el).next()));
+groupedResources.each((_,el)=>{const p=$(el);resources.push(`<li>${p.html()}</li>`);p.remove();});
+const contents:{label:string;id:string}[]=[];
+$('h2,h3').each((index,el)=>{const heading=$(el);const label=heading.text().trim();const id=`section-${index+1}`;heading.attr('id',id);contents.push({label,id});});
+$('p').each((_,el)=>{const p=$(el);const image=p.children('img');if(image.length===1 && !p.text().trim()){image.attr('loading','lazy');p.replaceWith(`<figure class="article-figure">${p.html()}<figcaption><a href="${image.attr('src')}" target="_blank" rel="noopener">View full-size image <span aria-hidden="true">↗</span></a></figcaption></figure>`);}});
+if(resources.length)$.root().append(`<aside class="article-resources" aria-label="Further reading"><p class="eyebrow">Further reading</p><ul>${resources.join('')}</ul></aside>`);
+const readTime=Math.max(1,Math.ceil($.root().text().trim().split(/\s+/).length/220));
+const posts=(await reader.collections.posts.all()).sort((a,b)=>(b.entry.date||'').localeCompare(a.entry.date||''));
+const index=posts.findIndex(p=>`insights/${p.slug}`===slug);
+const adjacent=[{label:'Newer insight',post:posts[index-1]},{label:'Earlier insight',post:posts[index+1]}].filter(item=>item.post);
+const formattedDate=date?new Date(date+'T12:00:00Z').toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}):null;
+---
+<article class="editorial-post">
+  <header class="article-header">
+    <a class="article-back" href="/insights"><span aria-hidden="true">←</span> All insights</a>
+    <div class="article-title-row"><span class="eyebrow">The long view</span><h1>{title}</h1></div>
+    <div class="article-byline"><span>By {author||'Red Barn Investment Counsel'}</span>{formattedDate && <time datetime={date!}>{formattedDate}</time>}<span>{readTime} min read</span></div>
+  </header>
+  <div class="article-layout">
+    <aside class="article-sidebar">
+      {contents.length>1 && <nav aria-label="In this article"><p class="eyebrow">In this article</p><ol>{contents.map(item=><li><a href={`#${item.id}`}>{item.label}</a></li>)}</ol></nav>}
+      <a class="article-contact" href="/start-here">Discuss your next chapter <span aria-hidden="true">↗</span></a>
+    </aside>
+    <div class="article-prose" set:html={$.html()} />
+  </div>
+  <footer class="article-end"><span class="eyebrow">Continue reading</span><nav class="article-adjacent" aria-label="More insights">{adjacent.map(({label,post})=><a href={`/insights/${post.slug}`}><span>{label}</span><h2>{shortTitle(post.entry.title)}</h2><span class="article-arrow" aria-hidden="true">↗</span></a>)}</nav><a class="article-back" href="/insights">View all insights <span aria-hidden="true">→</span></a></footer>
+</article>
+<style is:global>
+.editorial-post{max-width:1200px;width:88%;margin:0 auto}.article-header{padding:58px 0 42px;border-bottom:1px solid var(--line)}.article-back{display:inline-flex;gap:15px;align-items:center;font-size:13px;color:var(--muted)}.article-back:hover{color:var(--red)}.article-title-row{display:grid;grid-template-columns:220px minmax(0,1fr);gap:60px;align-items:start;margin:58px 0 30px}.article-title-row .eyebrow{margin-top:14px}.article-title-row h1{font-size:clamp(2.8rem,6.5vw,5.8rem);line-height:1.06;letter-spacing:-.055em;max-width:900px;text-wrap:balance}.article-byline{margin-left:280px;display:flex;gap:12px 28px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.article-byline>span:first-child{color:var(--ink)}.article-layout{display:grid;grid-template-columns:220px minmax(0,760px);gap:60px;padding:54px 0 80px;align-items:start}.article-sidebar{position:sticky;top:120px;font-size:12px}.article-sidebar .eyebrow{margin-bottom:20px}.article-sidebar ol{padding:0;list-style:none;margin:0 0 32px}.article-sidebar li{border-top:1px solid var(--line)}.article-sidebar li a{display:block;padding:13px 0;line-height:1.5;color:var(--muted)}.article-sidebar li a:hover{color:var(--red)}.article-contact{display:flex;gap:18px;color:var(--red);padding-top:20px;border-top:1px solid var(--red);line-height:1.5}.article-prose{min-width:0;font-size:17px;line-height:1.85;overflow-wrap:anywhere}.article-prose p,.article-prose li{line-height:1.85}.article-prose p{margin:0 0 24px}.article-prose h2,.article-prose h3{scroll-margin-top:110px}.article-prose h2{font-size:clamp(1.7rem,2.5vw,2.45rem);letter-spacing:-.035em;line-height:1.23;margin:52px 0 24px;text-wrap:pretty}.article-prose h3,.article-prose h4{font-size:1.4rem;line-height:1.3;margin:38px 0 20px;letter-spacing:-.02em}.article-prose>h2:first-child{margin-top:0}.article-prose h2 strong,.article-prose h3 strong{font-weight:500}.article-prose strong{font-weight:700}.article-prose a{color:var(--red);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px}.article-prose a:hover{text-decoration-thickness:2px}.article-prose ul,.article-prose ol{padding-left:24px;margin:24px 0 32px}.article-prose li{padding-left:5px;margin:12px 0}.article-prose li::marker{color:var(--red)}.article-prose blockquote{margin:35px 0;padding:8px 0 8px 24px;border-left:2px solid var(--red)}.article-prose table{display:block;max-width:100%;overflow-x:auto;border-collapse:collapse;font-size:14px}.article-prose th,.article-prose td{padding:12px;border-bottom:1px solid var(--line)}.article-prose .article-figure{margin:38px 0;padding:20px;background:#fff;border:1px solid var(--line)}.article-figure img{width:auto;max-width:100%;height:auto;margin:auto}.article-figure figcaption{margin-top:16px;padding-top:12px;border-top:1px solid var(--light);font-size:11px;text-align:right}.article-figure figcaption a{text-decoration:none}.article-resources{border-top:1px solid var(--line);margin-top:40px;padding-top:28px}.article-resources ul{list-style:none;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:12px 24px;margin:0}.article-resources li{margin:0;padding:0;font-size:14px}.article-prose hr{border:0;border-top:1px solid var(--line);margin:40px 0}.article-end{border-top:1px solid var(--ink);padding:40px 0 20px}.article-end .eyebrow{margin-bottom:22px}.article-adjacent{display:grid;grid-template-columns:1fr 1fr;gap:60px;margin-bottom:36px}.article-adjacent>a{position:relative;padding:0 45px 24px 0;border-bottom:1px solid var(--line)}.article-adjacent>a>span:first-child{font-size:12px;color:var(--muted)}.article-adjacent h2{font-size:clamp(1.7rem,3vw,2.6rem);line-height:1.2;margin-top:14px}.article-adjacent a:hover h2{color:var(--red)}.article-arrow{position:absolute;right:0;top:30px;font-size:28px;color:var(--red)}
+@media(max-width:1000px){.article-title-row,.article-layout{grid-template-columns:170px minmax(0,1fr);gap:35px}.article-byline{margin-left:205px}}
+@media(max-width:760px){.editorial-post{width:86%}.article-header{padding:36px 0 28px}.article-title-row{display:block;margin:36px 0 24px}.article-title-row .eyebrow{margin:0 0 20px}.article-title-row h1{font-size:clamp(2.7rem,10vw,4.5rem)}.article-byline{margin-left:0;font-size:11px;gap:10px 18px}.article-layout{display:flex;flex-direction:column;gap:30px;padding:32px 0 48px}.article-sidebar{position:static;width:100%}.article-sidebar nav{border-bottom:1px solid var(--line);padding-bottom:20px}.article-sidebar ol{display:flex;flex-wrap:wrap;gap:10px 20px;margin:0}.article-sidebar li{border:0;flex:1 1 130px}.article-sidebar li a{padding:0}.article-sidebar .eyebrow{margin-bottom:14px}.article-contact{display:none}.article-prose{font-size:16px;width:100%}.article-prose h2{font-size:1.85rem}.article-prose .article-figure{margin:28px 0;padding:10px}.article-adjacent{gap:28px;grid-template-columns:1fr}.article-end{padding-top:28px}}
+</style>
