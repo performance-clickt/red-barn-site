@@ -37,5 +37,4 @@ const related: Record<string,string[][]>={seasons:[['Sowing','/sowing'],['Growin
   {['start-here','contact'].includes(slug) && <section class="page-contact"><h2>Book an intro call</h2><ContactForm client:load email={settings.email} /></section>}
   {quizUrl && <section class="quiz-section section-shell" aria-label="Financial reflection"><a class="button button-primary" href={quizUrl} target="_blank" rel="noopener noreferrer">{slug==='financial-reflection'?'Start your Financial Values Reflection':'Explore your Financial Freedom Roadmap'} <span aria-hidden="true">↗</span></a><p class="quiz-launch-note">Opens in a new window.</p></section>}
   {source?.videos.map(v=><div class="section-shell"><SourceVideo url={v.video.alexandriaUrl.replace('{variant}','playlist.m3u8')} poster={v.thumbnail.assetUrl} title={`${title} — video`} /></div>)}
-  <section class="page-cta section-shell"><h2>Your next chapter starts here.</h2><a class="button button-primary" href="/start-here">Start Here <span aria-hidden="true">↗</span></a></section>
 </SiteLayout>
