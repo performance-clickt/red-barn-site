@@ -1,14 +1,14 @@
 ---
-import { reader } from '../lib/content';
+import galleries from '../content/page-galleries.json';
 interface Props { title:string; subtitle?:string; image?:string|null; alt?:string|null; links?:string[][]; }
-const {title,subtitle,image,alt,links}=Astro.props;
-const home=await reader.singletons.homepage.readOrThrow();
-const photos=[{image:image||home.gallery[0].image,alt:alt||home.gallery[0].alt},home.gallery[1],home.gallery[3],home.gallery[2]];
+const {title,subtitle,links}=Astro.props;
+const slug=Astro.params.slug as keyof typeof galleries;
+const photos=galleries[slug]||galleries['about'];
 ---
 <header class="page-gallery-hero">
   <nav class="gallery-breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>{title}</span></nav>
   <div class="page-gallery-stage">
-    <div class="page-gallery-photos" aria-hidden="true">{photos.map((photo,i)=><div class={`page-photo page-photo-${i}`}><img src={photo.image!} alt="" width="900" height="700" loading={i===0?'eager':'lazy'} fetchpriority={i===0?'high':'auto'} /></div>)}</div>
+    <div class="page-gallery-photos" aria-hidden="true">{photos.map((photo,i)=><div class={`page-photo page-photo-${i}`}><img src={photo} alt="" width="900" height="700" loading="eager" fetchpriority={i===0?'high':'auto'} /></div>)}</div>
     <div class="page-gallery-title"><h1>{title}</h1>{subtitle && <p class="gallery-subtitle">{subtitle}</p>}{links && <nav aria-label={`${title} pages`}>{links.map(([label,url])=><a href={url}>{label} <span aria-hidden="true">↗</span></a>)}</nav>}</div>
   </div>
 </header>
@@ -27,7 +27,6 @@ const photos=[{image:image||home.gallery[0].image,alt:alt||home.gallery[0].alt},
 .page-gallery-title h1{font-size:clamp(3.5rem,7vw,7.5rem);line-height:1.02;letter-spacing:-.06em;color:var(--red);text-wrap:balance}
 .gallery-subtitle{font-size:clamp(16px,1.6vw,22px);line-height:1.45;max-width:480px;margin:24px auto 0;text-wrap:balance}.page-gallery-title nav{display:flex;justify-content:center;flex-wrap:wrap;gap:16px 25px;margin:28px auto 0;max-width:560px}
 .page-gallery-title nav a{font-size:13px;line-height:1.5}.page-gallery-title nav a:hover{color:var(--red)}
-@supports(animation-timeline:view()){@media(prefers-reduced-motion:no-preference){.page-photo{animation:open-gallery linear both;animation-timeline:view();animation-range:exit 0% exit 100%}@keyframes open-gallery{to{translate:var(--travel) 35px}}}}
 @media(min-width:1500px){.page-gallery-stage{min-height:550px}}
 @media(max-width:760px){.page-gallery-hero{padding-top:24px}.gallery-breadcrumb{width:86%;font-size:11px}.page-gallery-stage{min-height:450px;margin-top:28px}.page-gallery-title{width:80%;padding:75px 0 110px}.page-gallery-title h1{font-size:clamp(2.7rem,10.5vw,4.5rem)}.page-photo-0{width:28%;height:23%;left:-7%;top:0}.page-photo-1{width:30%;height:23%;right:-5%;top:-1%}.page-photo-2{width:31%;height:22%;left:3%;bottom:-5%}.page-photo-3{width:37%;height:24%;right:0;bottom:-4%}.page-gallery-title nav{gap:10px 18px;margin-top:22px}.page-gallery-title nav a{font-size:12px}}
 </style>
@@ -35,3 +34,33 @@ const photos=[{image:image||home.gallery[0].image,alt:alt||home.gallery[0].alt},
 .page-gallery-hero + .page-content{padding-top:48px}
 @media(max-width:760px){.page-gallery-hero + .page-content{padding-top:32px}}
 </style>
+
+<script>
+  import { scroll } from 'motion';
+  function openPageGallery() {
+    const stage=document.querySelector<HTMLElement>('.page-gallery-stage');
+    if(!stage || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const frame=stage.getBoundingClientRect();
+    const photos=stage.querySelectorAll<HTMLElement>('.page-photo');
+    photos.forEach((photo,i)=>{
+      const box=photo.getBoundingClientRect();
+      const x=frame.left+frame.width*(i%2===0?.36:.64)-(box.left+box.width/2);
+      const y=frame.top+frame.height*(i<2?.35:.65)-(box.top+box.height/2);
+      const resting=getComputedStyle(photo).transform;
+      photo.animate([
+        {transform:`translate(${x}px,${y}px) scale(1.55) rotate(${i%2===0?-9:9}deg)`,opacity:0},
+        {offset:.16,opacity:1},
+        {transform:resting,opacity:1}
+      ],{duration:1800,delay:i*110,easing:'cubic-bezier(.22,1,.36,1)',fill:'backwards'});
+    });
+    const stopScroll=scroll((progress:number)=>{
+      photos.forEach((photo,i)=>{photo.style.translate=`${progress*(i%2===0?-120:120)}px ${progress*(i<2?-45:60)}px`;});
+    },{target:stage,offset:['start start','end start']});
+    document.addEventListener('astro:before-swap',stopScroll,{once:true});
+    stage.querySelector('.page-gallery-title')?.animate([
+      {opacity:0,transform:'translateY(24px)'},{opacity:1,transform:'translateY(0)'}
+    ],{duration:900,delay:550,easing:'ease-out',fill:'backwards'});
+  }
+  openPageGallery();
+  document.addEventListener('astro:after-swap',openPageGallery);
+</script>
