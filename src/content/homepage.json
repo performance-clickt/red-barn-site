@@ -1,0 +1,81 @@
+{
+  "headline": "Think Further.",
+  "tagline": "Build the life you want today and carry forward the values that matter most.",
+  "intro": "At Red Barn, we believe wealth is more than numbers — it’s the values you carry forward. Our team delivers risk-managed, tax-aware portfolios and family-first planning that provide peace of mind today and legacy clarity tomorrow.",
+  "gallery": [
+    {
+      "image": "/images/homepage/gallery/0/image.webp",
+      "alt": "An elderly couple holding hands and walking through a field during sunset with mountains in the background."
+    },
+    {
+      "image": "/images/homepage/gallery/1/image.webp",
+      "alt": "Group of smiling people gathered outdoors, with a pregnant woman at the center, surrounded by family members and friends, during sunset in a park with trees."
+    },
+    {
+      "image": "/images/homepage/gallery/2/image.webp",
+      "alt": "An elderly woman with gray hair and a young girl with curly hair hold hands and walk outdoors in a green field on a cloudy day."
+    },
+    {
+      "image": "/images/homepage/gallery/3/image.webp",
+      "alt": "Multiple hands plant seeds in soil during daylight."
+    },
+    {
+      "image": "/images/homepage/gallery/4/image.webp",
+      "alt": "Person watering garden plants with a green watering can in sunlight."
+    }
+  ],
+  "differences": [
+    {
+      "title": "Institutional strategies, no gatekeeping",
+      "body": "We bring “pension-style” diversification—once reserved for the ultra-wealthy—into family portfolios, without watering it down."
+    },
+    {
+      "title": "Calibrated for today’s markets",
+      "body": "Risk-managed, tax-aware portfolios designed for volatile markets and long horizons."
+    },
+    {
+      "title": "Beyond retirement income",
+      "body": "Peace of mind today; legacy clarity tomorrow. Wealth isn’t just what you build—it’s what you carry forward."
+    },
+    {
+      "title": "Aligned & accountable",
+      "body": "Discretionary management focused on your plan, your liabilities, and the people you love."
+    }
+  ],
+  "familyTitle": "Transfer more than wealth. Transfer wisdom.",
+  "familyBody": "Most families plan how assets will move—few plan how values will. The Family Meeting is a moderated, values-first conversation that aligns generations while everyone is at the table. We turn assumptions into shared understanding and document who does what, when, and why.",
+  "familyTakeaways": [
+    "A shared statement of family values and priorities",
+    "Clear roles, decisions, and next steps",
+    "Fewer surprises—and fewer points of conflict—later on"
+  ],
+  "investingTitle": "A portfolio built like a pension—on purpose.",
+  "investingBody": "We design around real-life liabilities (education, retirement income, giving) and combine public markets with select institutional-style strategies—private credit, private equity, and real assets—implemented through structures appropriate for family portfolios. The aim: steadier compounding, better downside protection, and alignment with multi-decade goals.",
+  "pillars": [
+    "Disciplined diversification across public markets and select private/real assets for stability and compounding.",
+    "Risk management tuned to your horizon and cash-flow needs.",
+    "Discretionary execution so your plan keeps moving—without you chasing markets."
+  ],
+  "steps": [
+    {
+      "title": "Discover",
+      "body": "We align around your goals, values, obligations, and current holdings."
+    },
+    {
+      "title": "Design",
+      "body": "We then move into the phase where we create the customized portfolio, tax-aware plan."
+    },
+    {
+      "title": "Decide & Deploy",
+      "body": "Lastly, we will walk you through a discretionary onboarding, provide clear next steps and ensure everything is implemented."
+    }
+  ],
+  "quizTitle": "Discover Your Financial Values",
+  "quizBody": "Pinpoint the principles that shape your money decisions—and learn how to pass them on.",
+  "quizBenefits": [
+    "12 quick questions; instant summary on-screen",
+    "Personalized “values profile” emailed to you (with conversation prompts)",
+    "Perfect primer for a Family Meeting"
+  ],
+  "advisorBody": "Extend institutional-grade solutions to your clients without losing the personal relationship. Co-service with transparency; scale your offering."
+}

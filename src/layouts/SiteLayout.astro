@@ -1,0 +1,54 @@
+---
+import '../styles/global.css';
+import { reader } from '../lib/content';
+interface Props { title?: string; description?: string; image?: string | null; home?: boolean; }
+const { title = 'Red Barn Investment Counsel', description = 'Risk-managed, tax-aware portfolios and family-first planning. Investing for generations.', image, home = false } = Astro.props;
+const settings = await reader.singletons.settings.readOrThrow();
+const canonical = new URL(home ? "/" : Astro.url.pathname, Astro.site);
+const navigation = [
+  { label: 'Home', href: '/' },
+  { label: 'Seasons', href: '/seasons', links: [['Sowing', '/sowing'], ['Growing', '/growing'], ['Harvest', '/harvest'], ['Legacy', '/legacy']] },
+  { label: 'Our Approach', href: '/our-approach', links: [['Discretionary Management', '/discretionary-management'], ['Pension Strategy', '/pension-strategy'], ['The Family Meeting', '/family-meeting']] },
+  { label: 'Resources', links: [['Insights', '/insights'], ['Events', '/events'], ['Financial Values Reflection', '/financial-reflection']] },
+  { label: 'Our Story', href: '/our-story', links: [['Our Team', '/our-team'], ['Advisor Relationships', '/advisor-relationships'], ['Careers', '/careers']] },
+];
+---
+<!doctype html>
+<html lang="en-CA">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title><meta name="description" content={description} /><link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#B01F29" />
+    <meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:type" content="website" /><meta property="og:url" content={canonical} />
+    {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+    <link rel="icon" href="/images/b27dc70ad2-RedBarn-Logo.webp" type="image/webp" />
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href="/" aria-label="Red Barn Investment Counsel — Home"><img src="/images/93eaa67c9f-RedBarn-Header-logo.webp" width="1500" height="302" alt="Red Barn Investment Counsel, a division of Vesta Wealth Partners" /></a>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        {navigation.map(item => item.links ? <div class="nav-group">
+          {item.href && <a href={item.href} aria-current={Astro.url.pathname === item.href ? 'page' : undefined}>{item.label}</a>}
+          <details><summary aria-label={item.href ? `More ${item.label} pages` : undefined}>{!item.href && item.label}<span class="chevron" aria-hidden="true">⌄</span></summary><div class="nav-dropdown">{item.links.map(([label,href])=><a href={href}>{label}</a>)}</div></details>
+        </div> : <a href={item.href} aria-current={Astro.url.pathname === item.href ? 'page' : undefined}>{item.label}</a>)}
+      </nav>
+      <a class="button button-primary header-cta" href={home ? '#connect' : '/start-here'}>Start Here <span aria-hidden="true">↗</span></a>
+      <details class="mobile-nav"><summary>Menu <span aria-hidden="true">☰</span></summary><nav aria-label="Mobile navigation">{navigation.map(item=><div>{item.href && <a href={item.href}>{item.label}</a>}{item.links?.map(([label,href])=><a class="sub-link" href={href}>{label}</a>)}</div>)}<a href="/start-here">Start Here</a></nav></details>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="site-footer">
+      <div class="footer-top"><a href="/" class="footer-wordmark">Think Further.</a><a class="button button-primary" href="/start-here">Start Here <span aria-hidden="true">↗</span></a></div>
+      <div class="footer-grid"><div><p class="footer-name">Red Barn<br />Investment Counsel</p><p>A division of Vesta Wealth Partners</p></div><div><h2>Visit</h2><p class="address">{settings.address}</p></div><div><h2>Get in touch</h2><a href={`tel:+1${settings.phone.replace(/\D/g,'')}`}>{settings.phone}</a><a href={`mailto:${settings.email}`}>{settings.email}</a></div><div><h2>Explore</h2><a href="/our-team">Our Team</a><a href="/insights">Insights</a><a href="/events">Events</a><a href="/advisor-relationships">For Advisors</a></div></div>
+      <div class="footer-legal"><p>{settings.disclosure}</p><p>{settings.riskDisclosure}</p><div><span>© {new Date().getFullYear()} Red Barn Investment Counsel</span><nav aria-label="Legal"><a href="/complaints">Client Concerns</a><a href="/privacy-policy">Privacy Policy</a><a href={settings.conflictsUrl}>Conflicts of Interest</a></nav></div></div>
+    </footer>
+    <script>
+      document.querySelectorAll<HTMLDetailsElement>('.site-header details').forEach(detail => {
+        detail.addEventListener('toggle', () => { if (detail.open) document.querySelectorAll<HTMLDetailsElement>('.site-header details').forEach(other => { if(other !== detail) other.open = false; }); });
+      });
+      document.addEventListener('keydown', event => { if(event.key === 'Escape') document.querySelectorAll<HTMLDetailsElement>('.site-header details[open]').forEach(detail => { detail.open = false; detail.querySelector('summary')?.focus(); }); });
+      document.addEventListener('click', event => { document.querySelectorAll<HTMLDetailsElement>('.site-header details[open]').forEach(detail => { if(!detail.contains(event.target as Node)) detail.open = false; }); });
+    </script>
+  </body>
+</html>

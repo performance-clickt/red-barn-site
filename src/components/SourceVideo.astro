@@ -1,0 +1,19 @@
+---
+interface Props { url: string; poster?: string; title: string; }
+const {url,poster,title}=Astro.props;
+---
+<div class="source-video"><video controls playsinline preload="none" poster={poster} aria-label={title} data-hls={url}><a href={url}>Watch {title}</a></video><p>{title}</p><p class="video-error" hidden>Video could not load. <a href={url}>Open the original video</a>.</p></div>
+<script>
+  const observer=new IntersectionObserver(entries=>entries.forEach(async entry=>{
+    if(!entry.isIntersecting)return;
+    const video=entry.target as HTMLVideoElement;observer.unobserve(video);
+    const url=video.dataset.hls!;
+    let Hls;
+    try { Hls=(await import('hls.js')).default; }
+    catch { video.src=url; video.parentElement?.querySelector('.video-error')?.removeAttribute('hidden'); return; }
+    if(Hls.isSupported()) {const hls=new Hls({maxBufferLength:10});hls.loadSource(url);hls.attachMedia(video);hls.on(Hls.Events.ERROR,(_,data)=>{if(data.fatal){video.parentElement?.querySelector('.video-error')?.removeAttribute('hidden');}});}
+    else if(video.canPlayType('application/vnd.apple.mpegurl')) { video.src=url; video.addEventListener('error',()=>video.parentElement?.querySelector('.video-error')?.removeAttribute('hidden')); }
+    else video.parentElement?.querySelector('.video-error')?.removeAttribute('hidden');
+  }),{rootMargin:'200px'});
+  document.querySelectorAll('video[data-hls]').forEach(v=>observer.observe(v));
+</script>

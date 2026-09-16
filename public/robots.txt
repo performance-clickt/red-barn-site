@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /keystatic
+Disallow: /api/keystatic
+Sitemap: https://www.redbarninvestmentcounsel.ca/sitemap.xml
