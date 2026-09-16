@@ -1,6 +1,9 @@
 # Red Barn — Astro + Keystatic
 
-A new visual design using Red Barn’s existing content, photography, logo, colors and fonts. Built locally; the live Squarespace website has not been changed.
+A new visual design using Red Barn’s existing content, photography, logo, colors and fonts. Deployed as a public review site through Coolify; the live Squarespace website has not been changed.
+
+- Preview: https://redbarn.178.104.248.103.sslip.io/
+- Repository: https://github.com/performance-clickt/red-barn-site
 
 ## Run
 
@@ -59,6 +62,8 @@ The design retains the live site’s Work Sans, Droid Sans and Space Grotesk, wi
 ## Deployment
 
 `npm run build` produces `dist/` for any static host. The included Dockerfile builds and audits the site, then serves only the static output with Nginx. In Coolify, use the Dockerfile build pack, branch `main`, and container port `80`. Health checks use `/healthz`. No application secrets, database, or persistent volume are needed.
+
+The Coolify application is in the **Red Barn** project on `dev.pyrito.com`, connected to this public repository. To publish an update, commit and push to `main`, then choose **Actions → Deploy** in Coolify. Automatic push webhooks are not configured. Keystatic stays available through local development; the public deployment serves the saved content only.
 
 The container is configured as a public review deployment: it sends `X-Robots-Tag: noindex, nofollow` and a disallow-all robots file. Remove those review-only rules from `deploy/nginx.conf` when intentionally launching the replacement production site. The existing live domain remains unchanged. Production omits `/keystatic` and `/api/keystatic`; existing public routes, canonical URLs, metadata, sitemap and robots file are included. The /home alias canonicalizes to the root.
 
