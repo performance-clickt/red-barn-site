@@ -15,20 +15,23 @@ const photos=galleries[slug]||galleries['about'];
 <style>
 .page-gallery-hero{padding:30px 0 0;overflow:hidden;border-bottom:1px solid var(--line)}
 .gallery-breadcrumb{display:flex;gap:16px;width:90%;margin:0 auto;color:var(--muted);font-size:12px}
-.page-gallery-stage{position:relative;min-height:480px;width:94%;max-width:1100px;margin-inline:auto;display:grid;place-items:center;margin-top:22px;isolation:isolate}
+.page-gallery-stage{position:relative;min-height:560px;width:94%;max-width:1280px;margin-inline:auto;display:grid;place-items:center;margin-top:22px;isolation:isolate}
 .page-gallery-photos{position:absolute;inset:0;z-index:-1;pointer-events:none}
 .page-photo{position:absolute;overflow:hidden;background:var(--light);border-radius:0}
 .page-photo img{width:100%;height:100%;object-fit:cover}
-.page-photo-0{width:19%;height:42%;left:3%;top:29%}
-.page-photo-1{width:19%;height:42%;right:3%;top:29%}
-.page-photo-2{width:29%;height:22%;left:35.5%;top:0}
-.page-photo-3{width:29%;height:22%;left:35.5%;bottom:0}
+.page-photo-0{width:20%;height:44%;left:0;top:19%}
+.page-photo-1{width:17%;height:32%;right:0;top:39%}
+.page-photo-2{width:27%;height:26%;left:24%;top:0}
+.page-photo-3{width:25%;height:23%;left:29%;bottom:0}
+.page-photo-4{width:15%;height:20%;right:17%;top:5%}
+.page-photo-5{width:18%;height:19%;right:15%;bottom:3%}
+.page-photo-6{width:12%;height:20%;left:8%;bottom:5%}
 .page-gallery-title{width:52%;max-width:850px;text-align:center;padding:36px 0}
 .page-gallery-title h1{font-size:clamp(3rem,6vw,6.5rem);line-height:1.02;letter-spacing:-.06em;color:var(--red);text-wrap:balance}
 .gallery-subtitle{font-size:clamp(16px,1.6vw,22px);line-height:1.45;max-width:480px;margin:24px auto 0;text-wrap:balance}.page-gallery-title nav{display:flex;justify-content:center;flex-wrap:wrap;gap:16px 25px;margin:28px auto 0;max-width:560px}
 .page-gallery-title nav a{font-size:13px;line-height:1.5}.page-gallery-title nav a:hover{color:var(--red)}
 .page-gallery-stage.long-title{min-height:600px}
-@media(max-width:760px){.page-gallery-hero{padding-top:24px}.gallery-breadcrumb{width:86%;font-size:11px}.page-gallery-stage,.page-gallery-stage.long-title{min-height:530px;margin-top:28px;width:100%}.page-gallery-title{width:86%;padding:140px 0}.page-gallery-title h1{font-size:clamp(2.7rem,10.5vw,4.5rem)}.page-photo-0{width:42%;height:21%;left:6%;top:0}.page-photo-1{width:42%;height:21%;right:6%;top:0}.page-photo-2{width:42%;height:21%;left:6%;bottom:0;top:auto}.page-photo-3{width:42%;height:21%;left:auto;right:6%;bottom:0}.page-gallery-title nav{gap:10px 18px;margin-top:22px}.page-gallery-title nav a{font-size:12px}}
+@media(max-width:760px){.page-gallery-hero{padding-top:24px}.gallery-breadcrumb{width:86%;font-size:11px}.page-gallery-stage,.page-gallery-stage.long-title{min-height:530px;margin-top:28px;width:100%}.page-gallery-title{width:86%;padding:140px 0}.page-gallery-title h1{font-size:clamp(2.7rem,10.5vw,4.5rem)}.page-photo-0{width:30%;height:23%;left:0;top:0}.page-photo-1{width:23%;height:17%;right:0;top:9%}.page-photo-2{width:36%;height:19%;left:34%;top:3%}.page-photo-3{width:34%;height:21%;left:23%;bottom:0}.page-photo-4{width:18%;height:17%;left:0;right:auto;top:auto;bottom:7%}.page-photo-5{width:38%;height:20%;right:0;bottom:5%}.page-photo-6{width:13%;height:8%;left:auto;right:7%;top:28%;bottom:auto}.page-gallery-title nav{gap:10px 18px;margin-top:22px}.page-gallery-title nav a{font-size:12px}}
 </style>
 <style is:global>
 .page-gallery-hero + .page-content{padding-top:48px}
@@ -42,7 +45,7 @@ const photos=galleries[slug]||galleries['about'];
     if(!stage || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const photos=stage.querySelectorAll<HTMLElement>('.page-photo');
     const compact=matchMedia('(max-width:760px)').matches;
-    const directions=compact?[[-60,-60],[60,-60],[-60,60],[60,60]]:[[-130,0],[130,0],[0,-90],[0,90]];
+    const directions=compact?[[-65,-50],[65,-30],[-20,-85],[-15,90],[-65,55],[70,65],[80,-20]]:[[-140,-35],[125,20],[-35,-105],[-15,100],[65,-80],[95,65],[-95,70]];
     photos.forEach((photo,i)=>{
       const [x,y]=directions[i];
       photo.animate([
