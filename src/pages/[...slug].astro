@@ -1,4 +1,5 @@
 ---
+import SeasonContent from '../components/SeasonContent.astro';
 import StartHereContent from '../components/StartHereContent.astro';
 import PageHero from '../components/PageHero.astro';
 import BlogPost from '../components/BlogPost.astro';
@@ -15,6 +16,7 @@ export async function getStaticPaths() {
 const {entry,post}=Astro.props;
 const slug=Astro.params.slug!;
 const title=shortTitle(entry.title);
+const seasonPage=['seasons','sowing','growing','harvest','legacy'].includes(slug);
 const galleryHero=!post && !['privacy-policy','complaints','careers','events'].includes(slug);
 let html=await renderBody(entry);
 // The lead photograph has its own full-width placement; do not repeat it in the article.
@@ -25,6 +27,7 @@ const firstHeading=html.match(/^<h2>(.*?)<\/h2>/);
 if(firstHeading && firstHeading[1].replace(/<[^>]+>/g,'').trim().toLowerCase()===title.toLowerCase()) html=html.slice(firstHeading[0].length);
 let heroSubtitle='';
 if(galleryHero){const lead=html.match(/^<h2>(.*?)<\/h2>/);if(lead){heroSubtitle=lead[1].replace(/<[^>]+>/g,'');html=html.slice(lead[0].length);}}
+if(seasonPage && !heroSubtitle){const lead=html.match(/^<h4>(.*?)<\/h4>/);if(lead){heroSubtitle=lead[1].replace(/<[^>]+>/g,'');html=html.slice(lead[0].length);}}
 const settings=await reader.singletons.settings.readOrThrow();
 const source=inventory.find(p=>p.slug===slug);
 const quizUrl=slug==='financial-reflection'?settings.quizUrl:slug==='financial-quiz'?settings.roadmapUrl:null;
@@ -33,7 +36,7 @@ const related: Record<string,string[][]>={seasons:[['Sowing','/sowing'],['Growin
 <SiteLayout title={entry.title} description={entry.description} image={entry.heroImage}>
   {post ? <BlogPost title={title} html={html} slug={slug} date={'date' in entry && typeof entry.date === 'string' ? entry.date : null} author={'author' in entry && typeof entry.author === 'string' ? entry.author : null} /> : <>
   {galleryHero ? <PageHero title={title} subtitle={heroSubtitle} image={entry.heroImage} alt={entry.heroAlt} links={related[slug]} /> : <header class="page-hero section-shell"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>{title}</span></nav><h1>{title}</h1>{entry.heroImage && <img class="page-lead-image" src={entry.heroImage} alt={entry.heroAlt||''} width="1500" height="850" fetchpriority="high" />}</header>}
-  {slug==='start-here' ? <StartHereContent html={html} image={entry.heroImage} alt={entry.heroAlt} email={settings.email}/> : <article class="page-content" set:html={html} />}
+  {seasonPage ? <SeasonContent html={html} slug={slug} image={entry.heroImage} alt={entry.heroAlt}/> : slug==='start-here' ? <StartHereContent html={html} image={entry.heroImage} alt={entry.heroAlt} email={settings.email}/> : <article class="page-content" set:html={html} />}
   </>}
   {slug==='contact' && <section class="page-contact"><h2>Book an intro call</h2><ContactForm client:load email={settings.email} /></section>}
   {quizUrl && <section class="quiz-section section-shell" aria-label="Financial reflection"><a class="button button-primary" href={quizUrl} target="_blank" rel="noopener noreferrer">{slug==='financial-reflection'?'Start your Financial Values Reflection':'Explore your Financial Freedom Roadmap'} <span aria-hidden="true">↗</span></a><p class="quiz-launch-note">Opens in a new window.</p></section>}

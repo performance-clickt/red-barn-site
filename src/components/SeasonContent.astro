@@ -1,0 +1,50 @@
+---
+import {load} from 'cheerio';
+interface Props{html:string;slug:string;image?:string|null;alt?:string|null}
+const {html,slug,image,alt}=Astro.props;
+const $=load(html,null,false);
+let nodes=$.root().children().toArray();
+const render=(items:typeof nodes)=>items.map(el=>$.html(el)).join('');
+const overview=slug==='seasons';
+let intro='',focus='',audience='',actions='',quiz='',sectionTitle='';
+const cards:string[]=[];
+if(overview){
+ $('h3').each((_,el)=>{const subtitle=$(el).next().next();if(subtitle.is('p')&&!subtitle.find('a,img').length)subtitle.replaceWith(`<h4>${subtitle.html()}</h4>`);});
+ nodes=$.root().children().toArray();
+ const section=nodes.findIndex(el=>el.tagName==='h2');
+ intro=render(nodes.slice(0,section));sectionTitle=$(nodes[section]).text();
+ let current:typeof nodes=[];
+ for(const el of nodes.slice(section+1)){if($(el).find('img').length&&current.length){cards.push(render(current));current=[];}current.push(el);}if(current.length)cards.push(render(current));
+}else{
+ const focusIndex=nodes.findIndex(el=>el.tagName==='h4');
+ intro=render(nodes.slice(0,focusIndex));
+ const lists=nodes.map((el,i)=>el.tagName==='ul'?i:-1).filter(i=>i>=0);
+ focus=render(nodes.slice(focusIndex,lists[0]+1));audience=render(nodes.slice(lists[0]+1,lists[1]+1));
+ let tail=nodes.slice(lists[1]+1);
+ const quizIndex=tail.findIndex(el=>el.tagName==='h2');if(quizIndex>=0){quiz=render(tail.slice(quizIndex));tail=tail.slice(0,quizIndex);}
+ const imageIndex=tail.findIndex(el=>$(el).find('img').length);
+ if(imageIndex<0)actions=render(tail);else{
+ actions=render(tail.slice(0,imageIndex));let current:typeof nodes=[];
+ for(const el of tail.slice(imageIndex)){if($(el).find('img').length&&current.length){cards.push(render(current));current=[];}current.push(el);}if(current.length)cards.push(render(current));
+ }
+}
+focus=focus.replace(/h4>/g,'h2>');audience=audience.replace(/h4>/g,'h2>');
+const seasons=[['Sowing','sowing'],['Growing','growing'],['Harvest','harvest'],['Legacy','legacy']];
+---
+<div class:list={['season-editorial',{ 'season-overview':overview }]}>
+ <section class="season-introduction"><div set:html={intro}/>{image&&<img src={image} alt={alt||''} width="1000" height="750" fetchpriority="high"/>}</section>
+ {overview ? <section class="season-directory"><h2>{sectionTitle}</h2><div class="season-editorial-cards">{cards.map(card=><article set:html={card}/>)}</div></section> : <>
+ <section class="season-priorities"><div class="season-focus" set:html={focus}/><div class="season-audience" set:html={audience}/></section>
+ <section class="season-actions" set:html={actions}/>
+ {cards.length>0&&<section class="season-related"><h2>Explore another season.</h2><div class="season-editorial-cards">{cards.map(card=><article set:html={card}/>)}</div></section>}
+ {quiz&&<section class="season-values" set:html={quiz}/>}
+ <nav class="season-navigation" aria-label="All seasons"><a href="/seasons">All seasons</a>{seasons.map(([name,path])=><a href={`/${path}`} aria-current={slug===path?'page':undefined}>{name} <span aria-hidden="true">↗</span></a>)}</nav>
+ </>}
+</div>
+<style is:global>
+.season-editorial{width:88%;max-width:1120px;margin:0 auto;padding-bottom:60px}.season-introduction{display:grid;grid-template-columns:1fr 1fr;gap:7%;align-items:center;padding:40px 0 70px}.season-introduction>img{width:100%;height:370px;object-fit:cover}.season-introduction p{font-size:18px;line-height:1.85}.season-introduction a{display:inline-block;margin-top:24px;color:var(--red);font-size:14px;text-decoration:underline;text-underline-offset:5px}.season-editorial h2{font-size:clamp(2rem,3.6vw,3.5rem);line-height:1.12}.season-editorial h4{font-size:28px;line-height:1.2;letter-spacing:-.025em}
+.season-priorities{display:grid;grid-template-columns:1.15fr .85fr;gap:7%;align-items:start;margin-bottom:38px}.season-priorities h2{font-size:28px;margin-bottom:26px}.season-priorities ul{list-style:none;padding:0;margin:0}.season-priorities li{font-size:16px;line-height:1.6}.season-priorities li p{margin:0}.season-focus li{padding:17px 0 17px 24px;border-top:1px solid var(--line);position:relative}.season-focus li:before{content:'—';position:absolute;left:0;color:var(--red)}.season-audience{padding:32px;background:var(--light)}.season-audience li{padding:12px 0}.season-audience h2{color:var(--red)}
+.season-actions{padding:0 0 60px;max-width:800px}.season-actions>p:has(>a){display:inline-block;margin:0 24px 20px 0}.season-actions a{font-family:'Space Grotesk',sans-serif;color:var(--red);font-size:12px;text-decoration:underline;text-underline-offset:5px}.season-actions p{font-size:13px;line-height:1.7;margin-top:16px;color:var(--muted)}.season-actions strong{font-weight:400}
+.season-editorial-cards{display:grid;grid-template-columns:1fr 1fr;gap:48px 36px;margin-top:32px}.season-editorial-cards article{min-width:0;border-bottom:1px solid var(--line);padding-bottom:28px}.season-editorial-cards img{width:100%;height:270px;object-fit:cover;margin-bottom:24px}.season-editorial-cards h3,.season-editorial-cards h4{font-size:25px;line-height:1.25;margin:16px 0}.season-editorial-cards h3 strong{font-weight:400;font-size:35px}.season-editorial-cards p{font-size:15px;line-height:1.7;margin:14px 0;color:var(--muted)}.season-editorial-cards a{font-family:'Space Grotesk',sans-serif;color:var(--red);font-size:12px;text-decoration:underline;text-underline-offset:5px}.season-editorial-cards hr{display:none}.season-editorial-cards p:has(>strong>em){font-size:12px}.season-editorial-cards em{font-style:normal}.season-related{padding-top:20px}.season-values{margin-top:56px;padding:36px;background:var(--light)}.season-values h2{font-size:30px}.season-values p{font-size:13px;margin-top:16px}.season-values a{color:var(--red);text-decoration:underline;text-underline-offset:5px}.season-navigation{display:flex;flex-wrap:wrap;gap:20px 32px;margin-top:48px;padding-top:25px;border-top:1px solid var(--line);font-size:13px}.season-navigation [aria-current]{color:var(--red)}
+@media(max-width:760px){.season-editorial{width:86%;padding-bottom:35px}.season-introduction{grid-template-columns:1fr;gap:26px;padding:28px 0 44px}.season-introduction p{font-size:16px}.season-introduction>img{height:260px}.season-priorities{grid-template-columns:1fr;gap:30px}.season-priorities h2{font-size:28px;font-size:25px}.season-audience{padding:26px}.season-focus li{font-size:15px}.season-actions{padding-bottom:25px}.season-editorial-cards{grid-template-columns:1fr;gap:30px}.season-editorial-cards img{height:250px}.season-editorial-cards h4{font-size:23px}.season-values{padding:26px;margin-top:36px}.season-values h2{font-size:27px}.season-navigation{gap:18px 24px}}
+</style>
