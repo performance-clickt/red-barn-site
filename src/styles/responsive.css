@@ -1,0 +1,108 @@
+/* Shared wrapping and breakpoint refinements. Keep authored copy and composition. */
+h1,h2,h3,h4{ text-wrap:balance; overflow-wrap:break-word; }
+p,li{ text-wrap:pretty; }
+main :is(section,article,header,aside,nav,form,figure,div){min-width:0}
+:where(main,footer) a{overflow-wrap:anywhere}
+.button{max-width:100%;white-space:normal;text-align:left}
+.button>span,.text-link>span{flex-shrink:0}
+.text-link{max-width:100%}
+.simple-page-hero nav a,.season-navigation a,.approach-navigation a{display:inline-flex;align-items:center;gap:5px;min-height:36px}
+.simple-page-hero nav a span{white-space:nowrap}
+.page-content{width:min(100%,790px)}
+.page-content h4{line-height:1.35}
+.page-content :is(h2,h3,h4),.article-prose :is(h2,h3,h4){overflow-wrap:normal;hyphens:manual}
+.page-content :is(p,li),.article-prose :is(p,li){overflow-wrap:break-word}
+.page-content :is(a,code),.article-prose :is(a,code){overflow-wrap:anywhere}
+.article-title-row h1{overflow-wrap:break-word}
+.article-prose figure{max-width:100%}
+.article-sidebar{max-height:calc(100svh - 150px);overflow-y:auto}
+.form-name{grid-template-columns:repeat(2,minmax(0,1fr))}
+.contact-form label{min-width:0}
+.contact-form .button{gap:16px}
+.contact-form .form-result .text-link{white-space:normal}
+.start-intro,.season-introduction,.approach-intro{grid-template-columns:repeat(2,minmax(0,1fr))}
+.start-fit strong,.start-process strong,.start-lead{text-wrap:balance}
+.season-editorial-cards,.approach-sections{grid-template-columns:repeat(2,minmax(0,1fr))}
+.post-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.post-card h2{line-height:1.18}
+@media (max-width:1050px){
+ .desktop-nav{display:none}
+ .site-header{justify-content:flex-start}
+ .header-cta{margin-left:auto}
+ .mobile-nav{display:block}
+ .mobile-nav summary{list-style:none;display:flex;align-items:center;gap:10px;min-height:44px;font-size:13px}
+ .mobile-nav nav{position:absolute;top:var(--header);left:0;right:0;display:grid;grid-template-columns:1fr 1fr;gap:20px;padding:20px 6%;max-height:calc(100svh - var(--header));overflow:auto;background:var(--paper);border-bottom:1px solid var(--line)}
+ .mobile-nav nav a,.mobile-nav nav a.sub-link{display:block;padding:12px 0;min-height:44px;font-size:14px}
+ .mobile-nav nav a.sub-link{color:var(--muted)}
+ .article-title-row,.article-layout{grid-template-columns:160px minmax(0,1fr);gap:32px}
+ .article-byline{margin-left:192px}
+ .start-process{padding:32px}
+ .start-process ol,.start-fit ul{gap:24px}
+ .start-connect{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:5%}
+ .start-form{padding:24px}
+}
+@media (min-width:761px) and (max-width:900px){
+ .contact-details dl{display:grid;grid-template-columns:1fr 1fr;gap:0 28px}
+ .contact-details dl>div:first-child{grid-column:1/-1}
+ .contact-panel{max-width:650px;width:100%}
+ .start-fit ul,.start-process ol{grid-template-columns:1fr}
+ .start-fit li{display:block}
+ .start-process li{display:grid;grid-template-columns:44px 1fr;gap:20px}
+ .start-process .step-number{font-size:30px}
+ .start-connect{grid-template-columns:1fr;gap:30px}
+ .start-connect h2 br{display:none}
+ .start-connect>div>p{max-width:none}
+ .start-form{max-width:650px;width:100%}
+ .family-section,.values-section{grid-template-columns:1fr;gap:36px}
+ .family-photo,.values-section>img{height:440px}
+ .hero-reveal{grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:4%}
+ .reveal-intro h2{font-size:clamp(2.2rem,4.8vw,3rem)}
+}
+@media(max-width:760px){
+ .simple-page-hero h1{font-size:clamp(2.25rem,9.5vw,4rem)}
+ .article-title-row h1{font-size:clamp(2.25rem,9.5vw,4.5rem)}
+ .page-hero h1{font-size:clamp(2.25rem,9.5vw,4rem)}
+ .article-title-row{display:block}
+ .article-layout{display:flex;gap:30px}
+ .article-byline{margin-left:0}
+ .article-sidebar{max-height:none;overflow:visible}
+ .article-sidebar li a{padding:10px 0;min-height:44px}
+ .article-resources ul{grid-template-columns:1fr}
+ .article-prose :is(h2,h3,h4){line-height:1.3}
+ .start-intro,.season-introduction,.approach-intro,.season-editorial-cards,.approach-sections,.post-grid{grid-template-columns:1fr}
+ .start-process{padding:28px 22px}
+ .start-form{padding:22px}
+ .season-introduction a,.approach-intro a{line-height:1.6}
+ .season-navigation a,.approach-navigation a,.simple-page-hero nav a{min-height:44px}
+ .season-navigation,.approach-navigation,.simple-page-hero nav{gap:8px 20px}
+ .contact-form input,.contact-form textarea,.compact input,.compact textarea{font-size:16px}
+ .contact-form .form-note{font-size:11px;line-height:1.5}
+ .contact-form .button{min-height:44px}
+ .hero-reveal{overflow:auto;align-content:start}
+ .reveal-intro h2{overflow-wrap:normal}
+ .intro-section h2 br,.page-hero h1 br{display:none}
+ .intro-section h2{font-size:clamp(2.5rem,11vw,3.4rem)}
+ .section-heading .text-link{margin-top:10px}
+ .footer-top{flex-wrap:wrap}
+ .footer-wordmark{max-width:none;white-space:nowrap;font-size:clamp(2.2rem,8vw,3rem)}
+}
+@media(max-width:380px){
+ .season-grid{grid-template-columns:1fr}
+ .season{height:340px}
+ .season p{font-size:12px;max-width:80%}
+ .footer-grid{grid-template-columns:1fr}
+ .form-name{grid-template-columns:1fr}
+ .hero-reveal .form-name{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .contact-panel{padding:20px}
+ .start-form{padding:18px}
+}
+@media(max-height:700px) and (min-width:641px){
+ .hero-reveal{overflow:auto;align-items:start}
+}
+
+/* Keep the quiz invitation attached to its introduction at all widths. */
+.page-content:has(+.quiz-section){padding-bottom:30px}
+.section-shell.quiz-section{padding-top:0}
+@media(max-width:760px){
+ .article-layout:not(:has(.article-sidebar nav)){gap:0}
+}
