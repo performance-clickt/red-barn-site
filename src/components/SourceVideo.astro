@@ -1,8 +1,9 @@
 ---
 interface Props { url: string; poster?: string; title: string; }
 const {url,poster,title}=Astro.props;
+const localPoster = poster?.includes('RedBarn-Thumbnail-Think.jpg') ? '/images/philosophy-video-poster.webp' : poster;
 ---
-<div class="source-video"><video controls playsinline preload="none" poster={poster} aria-label={title} data-hls={url}><a href={url}>Watch {title}</a></video><p>{title}</p><p class="video-error" hidden>Video could not load. <a href={url}>Open the original video</a>.</p></div>
+<div class="source-video"><video controls playsinline preload="none" poster={localPoster} aria-label={title} data-hls={url}><a href={url}>Watch {title}</a></video><p>{title}</p><p class="video-error" hidden>Video could not load. <a href={url}>Open the original video</a>.</p></div>
 <script>
   const observer=new IntersectionObserver(entries=>entries.forEach(async entry=>{
     if(!entry.isIntersecting)return;

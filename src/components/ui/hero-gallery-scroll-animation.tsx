@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { motion, useScroll, useTransform, useMotionValueEvent, type MotionValue } from 'motion/react';
 import ContactForm from '../ContactForm';
-interface Photo { image: string | null; alt: string }
+interface Photo { image: string | null; alt: string; responsive?: { src?: string; srcSet?: string; sizes?: string } }
 interface Props { headline: string; tagline: string; gallery: readonly Photo[]; email: string }
 const directions = [ ['-120%', '-25%'], ['120%', '-30%'], ['120%', '30%'], ['-60%', '135%'], ['45%', '135%'] ];
 function BentoCell({ photo, index, progress, compact }: { photo: Photo; index: number; progress: MotionValue<number>; compact: boolean }) {
@@ -12,7 +12,10 @@ function BentoCell({ photo, index, progress, compact }: { photo: Photo; index: n
   const y = useTransform(progress, [0, .8], ['0%', exit[1]]);
   const scale = useTransform(progress, [0, .8], [1, .82]);
   return <motion.div className={`gallery-cell cell-${index}`} style={{ x, y, scale }}>
-    <img src={photo.image || undefined} alt={photo.alt} width={index === 0 ? 1600 : 800} height={1000} fetchPriority={index === 0 ? 'high' : 'auto'} decoding="async" />
+    <picture style={{ display: 'contents' }}>
+      {index >= 3 && <source media="(max-width: 640px)" srcSet="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" />}
+      <img {...photo.responsive} src={photo.responsive?.src || photo.image || undefined} alt={photo.alt} width={index === 0 ? 1600 : 800} height={1000} fetchPriority={index === 0 ? 'high' : 'auto'} decoding="async" />
+    </picture>
   </motion.div>;
 }
 export default function HeroGallery({ headline, tagline, gallery, email }: Props) {

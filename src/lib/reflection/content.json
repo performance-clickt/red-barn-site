@@ -1,0 +1,306 @@
+{
+  "provenance": {
+    "url": "https://redbarn-values-guide.lovable.app/",
+    "capturedOn": "2026-09-17",
+    "method": "Public UI observation; scoring reconstructed from 19 cases, not original source."
+  },
+  "introduction": {
+    "title": "Financial Values Reflection",
+    "subhead": "Discover the values that guide your financial decisions.",
+    "body": "This reflection helps you articulate what matters most — identifying what you want to pass on to the next generation and preparing for meaningful family conversations.",
+    "benefits": [
+      "12 reflective questions across 4 value themes",
+      "Discover your unique financial archetype",
+      "Receive questions for family conversations"
+    ],
+    "nameLabel": "Name (optional)",
+    "namePlaceholder": "Your name",
+    "emailLabel": "Email for Results *",
+    "emailPlaceholder": "your@email.com",
+    "startLabel": "Start Reflection →",
+    "instructions": "Rate each statement from 1 (Not at all true for me) to 5 (Completely true for me)."
+  },
+  "themes": [
+    {
+      "id": "stewardship",
+      "name": "Stewardship",
+      "description": "Responsibility & Preparedness",
+      "tiePriority": 0
+    },
+    {
+      "id": "connection",
+      "name": "Connection",
+      "description": "Family & Belonging",
+      "tiePriority": 1
+    },
+    {
+      "id": "growth",
+      "name": "Growth",
+      "description": "Learning & Transformation",
+      "tiePriority": 2
+    },
+    {
+      "id": "faith",
+      "name": "Faith",
+      "description": "Principle & Purpose",
+      "tiePriority": 3
+    }
+  ],
+  "options": [
+    {
+      "value": 1,
+      "label": "Not at all true for me"
+    },
+    {
+      "value": 2,
+      "label": "Somewhat untrue"
+    },
+    {
+      "value": 3,
+      "label": "Neutral"
+    },
+    {
+      "value": 4,
+      "label": "Somewhat true"
+    },
+    {
+      "value": 5,
+      "label": "Completely true for me"
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "number": 1,
+      "theme": "stewardship",
+      "text": "I see managing money wisely as a way to care for the people who depend on me."
+    },
+    {
+      "id": "q2",
+      "number": 2,
+      "theme": "stewardship",
+      "text": "I believe it's important to leave clear plans and documentation for those who come after me."
+    },
+    {
+      "id": "q3",
+      "number": 3,
+      "theme": "stewardship",
+      "text": "Being financially organized helps me feel at peace and confident about the future."
+    },
+    {
+      "id": "q4",
+      "number": 4,
+      "theme": "connection",
+      "text": "I make an effort to include my family in financial conversations and decisions."
+    },
+    {
+      "id": "q5",
+      "number": 5,
+      "theme": "connection",
+      "text": "I'd rather leave behind strong relationships than a large inheritance."
+    },
+    {
+      "id": "q6",
+      "number": 6,
+      "theme": "connection",
+      "text": "I believe open communication about money builds trust across generations."
+    },
+    {
+      "id": "q7",
+      "number": 7,
+      "theme": "growth",
+      "text": "I reflect often on what life has taught me — and how those lessons can guide others."
+    },
+    {
+      "id": "q8",
+      "number": 8,
+      "theme": "growth",
+      "text": "I see mistakes and challenges as opportunities to grow and share wisdom."
+    },
+    {
+      "id": "q9",
+      "number": 9,
+      "theme": "growth",
+      "text": "I hope my legacy shows how learning and adaptability can lead to a better life."
+    },
+    {
+      "id": "q10",
+      "number": 10,
+      "theme": "faith",
+      "text": "My financial decisions are guided by a clear set of personal or spiritual principles."
+    },
+    {
+      "id": "q11",
+      "number": 11,
+      "theme": "faith",
+      "text": "I see wealth as something I'm responsible to use well, not something I own outright."
+    },
+    {
+      "id": "q12",
+      "number": 12,
+      "theme": "faith",
+      "text": "Gratitude and generosity are central to how I define a meaningful life."
+    }
+  ],
+  "archetypes": [
+    {
+      "id": "guardian",
+      "name": "The Guardian",
+      "themes": [
+        "stewardship",
+        "connection"
+      ],
+      "tagline": "Protecting what matters most and keeping family unity at the center.",
+      "summary": "You see money as a way to provide care, stability, and closeness. You take responsibility seriously — not just for your assets, but for the people who depend on you. You know that security without connection is hollow, and you want your family to feel both safe and supported.",
+      "selfQuestions": [
+        "Have I shared the \"why\" behind the systems I've built for my family?",
+        "Do my financial plans make space for generosity and togetherness, not just efficiency?"
+      ],
+      "familyQuestions": [
+        "What helps each of us feel most secure — financially and emotionally?",
+        "How can we use our resources to stay connected as our family grows?"
+      ]
+    },
+    {
+      "id": "mentor",
+      "name": "The Mentor",
+      "themes": [
+        "stewardship",
+        "growth"
+      ],
+      "tagline": "Leading through structure, teaching through example.",
+      "summary": "You've learned the value of planning — and how discipline today can create freedom tomorrow. You believe in passing down wisdom through action, helping others avoid mistakes you've made and build from what you've learned.",
+      "selfQuestions": [
+        "Have I given the next generation enough room to learn by doing?",
+        "What habits or lessons most shaped my success, and how can I model them clearly?"
+      ],
+      "familyQuestions": [
+        "What's one financial lesson you wish someone had taught you earlier?",
+        "How can we make learning about money an ongoing part of our family culture?"
+      ]
+    },
+    {
+      "id": "trustee",
+      "name": "The Trustee",
+      "themes": [
+        "stewardship",
+        "faith"
+      ],
+      "tagline": "Order guided by higher principles.",
+      "summary": "You see wealth as something entrusted to you — a resource to manage with integrity and gratitude. You believe purpose should guide every plan, and that faith or principle gives financial order its meaning.",
+      "selfQuestions": [
+        "Do my financial priorities reflect what I value most deeply?",
+        "How can I make generosity and gratitude visible in my daily decisions?"
+      ],
+      "familyQuestions": [
+        "What principles should shape how we earn, save, and give?",
+        "How do we honor the blessings we've been given through the way we manage them?"
+      ]
+    },
+    {
+      "id": "guide",
+      "name": "The Guide",
+      "themes": [
+        "connection",
+        "growth"
+      ],
+      "tagline": "Nurturing learning, trust, and openness across generations.",
+      "summary": "You lead through listening. You believe family unity comes from curiosity, transparency, and shared learning. You're focused on helping each generation understand one another — financially and emotionally — so that wisdom grows alongside wealth.",
+      "selfQuestions": [
+        "Do I invite others to share their perspectives, or do I default to teaching?",
+        "How can I use my experience to empower others rather than instruct them?"
+      ],
+      "familyQuestions": [
+        "What's one thing each of us has learned this year that could benefit everyone else?",
+        "How can we make sure knowledge flows both up and down our family tree?"
+      ]
+    },
+    {
+      "id": "bridge-builder",
+      "name": "The Bridge Builder",
+      "themes": [
+        "connection",
+        "faith"
+      ],
+      "tagline": "Uniting family bonds around shared belief and gratitude.",
+      "summary": "You're the heart of your family — the one who connects love, purpose, and values. You believe that financial peace comes from alignment: when your resources, relationships, and beliefs all move in the same direction.",
+      "selfQuestions": [
+        "Am I as intentional about nurturing relationships as I am about protecting resources?",
+        "How do I express my gratitude for the people who've shaped my life?"
+      ],
+      "familyQuestions": [
+        "What beliefs or principles connect us across generations?",
+        "How can we show our shared gratitude in the way we live and give?"
+      ]
+    },
+    {
+      "id": "visionary",
+      "name": "The Visionary",
+      "themes": [
+        "growth",
+        "faith"
+      ],
+      "tagline": "Transformation guided by purpose.",
+      "summary": "You see life as a journey of learning and renewal. You want to grow, to help others grow, and to leave a legacy that inspires faith — whether spiritual, moral, or personal. You're driven by the belief that transformation is the highest form of stewardship.",
+      "selfQuestions": [
+        "How can I continue to grow in ways that strengthen my sense of purpose?",
+        "What story do I want my life to tell about faith, resilience, and hope?"
+      ],
+      "familyQuestions": [
+        "What values or beliefs have shaped our greatest growth moments?",
+        "How can we encourage one another to live out our purpose in daily life?"
+      ]
+    }
+  ],
+  "resultLabels": {
+    "status": "Reflection Complete",
+    "title": "Your Financial Values Reflection",
+    "archetype": "Your Archetype",
+    "summary": "Reflection Summary",
+    "selfQuestions": "Questions to Ask Yourself",
+    "familyQuestions": "Questions to Ask Your Family",
+    "scores": "Your Theme Scores",
+    "overall": "Overall Average",
+    "agenda": "Family Meeting Agenda",
+    "agendaSubtitle": "A 90-Minute Framework",
+    "nextSteps": "Next Steps"
+  },
+  "agenda": [
+    {
+      "segment": "Opening Reflection",
+      "duration": "10 min",
+      "purpose": "Share why this meeting matters and what you hope it achieves."
+    },
+    {
+      "segment": "Family Stories",
+      "duration": "20 min",
+      "purpose": "Each person shares one memory or lesson about money, work, or values."
+    },
+    {
+      "segment": "Shared Priorities",
+      "duration": "20 min",
+      "purpose": "Discuss what matters most to the family — security, generosity, freedom, or faith."
+    },
+    {
+      "segment": "Planning Together",
+      "duration": "25 min",
+      "purpose": "Talk through practical next steps: wills, estate planning, insurance, or a Red Barn–facilitated Family Meeting."
+    },
+    {
+      "segment": "Closing Commitment",
+      "duration": "15 min",
+      "purpose": "Each member shares one action they'll take to strengthen the family's legacy."
+    }
+  ],
+  "nextSteps": [
+    "Review your archetype and reflection questions with intention.",
+    "Schedule a family meeting using the agenda framework.",
+    "Book a consultation to discuss legacy planning strategies."
+  ],
+  "actions": [
+    "Download PDF",
+    "Email My Results",
+    "Restart Reflection"
+  ],
+  "footer": "Built with institutional discipline for family outcomes • Privacy-first • Independent custody"
+}

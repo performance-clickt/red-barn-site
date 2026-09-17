@@ -56,7 +56,7 @@ The relay validates fields and origin, limits payload size, includes a honeypot,
 
 ## External content
 
-The original financial-values tools are linked from `/financial-reflection` and `/financial-quiz` with a clear launch button (the embedded view stayed blank during local browser testing). Their hosting and submission behavior remain with their existing provider. The existing Squarespace HLS philosophy video remains externally hosted and plays through native HLS or a lazily loaded HLS player. Move these services/media before retiring the old account if required. External editorial links and webinar registrations are retained.
+The self-hosted `/financial-reflection` quiz provides on-screen results and local PDF export. Email and CRM storage are deferred; see `docs/financial-reflection.md` for evidence, validation and future configuration. `/financial-quiz` remains a separate externally hosted Financial Freedom Roadmap app; its hosting and submission behavior remain with its existing provider. The existing Squarespace HLS philosophy video remains externally hosted and plays through native HLS or a lazily loaded HLS player. Move these services/media before retiring the old account if required. External editorial links and webinar registrations are retained.
 
 ## Source & migration
 

@@ -1,0 +1,10 @@
+---
+import { responsiveImage } from '../lib/responsive-images';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import FinancialReflection from '../components/FinancialReflection';
+import { reader } from '../lib/content';
+const entry = await reader.collections.pages.readOrThrow('financial-reflection');
+---
+<SiteLayout title={entry.title} description="Discover the values that guide your financial decisions. Twelve questions, a personal reflection, and a framework for family conversations." image={entry.heroImage}>
+  <FinancialReflection client:load heroImage={responsiveImage("/images/pages/financial-reflection/heroImage.webp", "(max-width: 900px) 88vw, 40vw")} />
+</SiteLayout>

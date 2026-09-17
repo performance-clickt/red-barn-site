@@ -19,7 +19,17 @@ for(const p of inventory){
   if(normalize(block).length<60)continue;
   blocks++;
   // Homepage CTA was intentionally rewritten; its invitation sentence is retained.
-  const compared = ['index','home'].includes(p.slug) ? block.replace(/^Book an intro call/, '') : block;
+  // Values Reflection is now self-hosted with local-only results and PDF export.
+  // Replace only the retired quiz/email claims; retain all other source checks.
+  if(p.slug==='financial-reflection' && block.startsWith('Discover what matters most')) {
+   if(!text.includes(normalize('Discover the values that guide your financial decisions.')))errors.push({route,error:'Reflection introduction missing'});
+   continue;
+  }
+  let compared = ['index','home'].includes(p.slug) ? block.replace(/^Book an intro call/, '') : block;
+  if(['index','home'].includes(p.slug)) {
+   compared=compared.replace('Personalized “values profile” emailed to you (with conversation prompts)', 'Personalized “values profile” to download (with conversation prompts)');
+   if(compared==='We’ll email your results and occasional insights. You can unsubscribe anytime.') compared='View your results instantly and download your reflection. Your answers stay in your browser; taking the reflection does not subscribe you to emails.';
+  }
   if(!text.includes(normalize(compared)))errors.push({route,error:'Source paragraph missing or changed',text:block.slice(0,140)});
  }
  for(const el of $('a[href],img[src]').toArray()){

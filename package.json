@@ -5,10 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev --host 127.0.0.1",
-    "build": "astro check && astro build",
+    "build": "node scripts/performance/prepare-images.mjs && astro check && astro build && node scripts/performance/optimize-html.mjs",
     "preview": "astro preview --host 127.0.0.1",
     "check": "astro check",
-    "audit:content": "node scripts/audit-content.mjs"
+    "audit:content": "node scripts/audit-content.mjs",
+    "test:reflection": "node --experimental-strip-types --test tests/reflection/*.test.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
@@ -27,6 +28,7 @@
     "@keystatic/astro": "6.0.0",
     "@keystatic/core": "0.6.9",
     "@markdoc/markdoc": "0.5.9",
+    "@pdf-lib/fontkit": "1.1.1",
     "@radix-ui/react-slot": "1.3.3",
     "@tailwindcss/vite": "4.3.3",
     "astro": "7.3.2",
@@ -34,6 +36,7 @@
     "clsx": "2.1.1",
     "hls.js": "1.7.3",
     "motion": "13.3.0",
+    "pdf-lib": "1.17.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "tailwind-merge": "3.7.0",

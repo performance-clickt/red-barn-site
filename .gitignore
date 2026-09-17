@@ -6,3 +6,6 @@ dist/
 !.env.example
 migration/source/
 .DS_Store
+
+# Generated responsive assets
+public/optimized/

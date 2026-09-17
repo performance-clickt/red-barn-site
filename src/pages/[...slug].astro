@@ -12,7 +12,7 @@ import inventory from '../../migration/content-inventory.json';
 export async function getStaticPaths() {
   const pages = await reader.collections.pages.all();
   const posts = await reader.collections.posts.all();
-  return [...pages.map(p=>({params:{slug:p.slug},props:{entry:p.entry,post:false}})),...posts.map(p=>({params:{slug:`insights/${p.slug}`},props:{entry:p.entry,post:true}}))];
+  return [...pages.filter(p=>p.slug!=='financial-reflection').map(p=>({params:{slug:p.slug},props:{entry:p.entry,post:false}})),...posts.map(p=>({params:{slug:`insights/${p.slug}`},props:{entry:p.entry,post:true}}))];
 }
 const {entry,post}=Astro.props;
 const slug=Astro.params.slug!;
@@ -34,7 +34,7 @@ if(seasonPage && !heroSubtitle){const lead=html.match(/^<h4>(.*?)<\/h4>/);if(lea
 if(slug==='discretionary-management'){const lead=html.match(/^<h2>(.*?)<\/h2>/);if(lead){heroSubtitle+=' '+lead[1];html=html.slice(lead[0].length);}}
 const settings=await reader.singletons.settings.readOrThrow();
 const source=inventory.find(p=>p.slug===slug);
-const quizUrl=slug==='financial-reflection'?settings.quizUrl:slug==='financial-quiz'?settings.roadmapUrl:null;
+const quizUrl=slug==='financial-quiz'?settings.roadmapUrl:null;
 const related: Record<string,string[][]>={seasons:[['Sowing','/sowing'],['Growing','/growing'],['Harvest','/harvest'],['Legacy','/legacy']],'our-approach':[['Discretionary Management','/discretionary-management'],['Pension Strategy','/pension-strategy'],['The Family Meeting','/family-meeting']],'our-story':[['Our Team','/our-team'],['Advisor Relationships','/advisor-relationships'],['Careers','/careers']]};
 ---
 <SiteLayout title={entry.title} description={entry.description} image={entry.heroImage}>
