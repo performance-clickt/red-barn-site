@@ -43,9 +43,16 @@ The shared UI directory is `src/components/ui`, exposed as `@/components/ui` via
 
 ## Form delivery
 
-The form is functional as an **email-draft composer**. It validates the original contact details (first/last name, email, subject and message), then presents a mailto link to the configured Red Barn inbox. It never claims an inquiry has been sent. No inquiry data is saved, tracked or transmitted by the site itself.
+The shared form posts to `/api/enquiries`, served by a small Node relay alongside Nginx. It submits names, email, subject and message to EspoCRM Lead Capture. The browser never receives the capture key and never opens an email draft as part of submission. Success appears only after the CRM accepts the request.
 
-Direct website-to-inbox delivery is not configured. Before using direct submissions in production, connect a server-side mail/form endpoint, add appropriate spam protection, and test actual receipt. Keystatic stores website content; it is not an inquiry database. The old Squarespace submission integration was not copied.
+Configure these **runtime-only** variables in Coolify before deployment:
+
+- `ESPO_LEAD_CAPTURE_URL`: the private HTTPS capture endpoint from EspoCRM Administration → Lead Capture. Never commit this value.
+- `FORM_ALLOWED_ORIGINS`: comma-separated exact website origins (no trailing slash).
+
+Capture payload fields: First Name, Last Name, Email and Description. Keep mailing-list subscription and double opt-in off for these enquiries. The subject and message are saved together in Description. No API administrator account is needed.
+
+The relay validates fields and origin, limits payload size, includes a honeypot, and limits requests to 120 per minute overall and three per email address. Duplicate submissions with the same key are coalesced for ten minutes within a running process. These in-memory controls reset on restart; they are not a durable delivery queue. Failed submissions retain the visitor's form details. Run `node --test server/enquiries.test.mjs` to verify mapping, duplicate suppression, validation and failure handling. Keystatic stores website content, not enquiries.
 
 ## External content
 
@@ -61,7 +68,7 @@ The design retains the live site’s Work Sans, Droid Sans and Space Grotesk, wi
 
 ## Deployment
 
-`npm run build` produces `dist/` for any static host. The included Dockerfile builds and audits the site, then serves only the static output with Nginx. In Coolify, use the Dockerfile build pack, branch `main`, and container port `80`. Health checks use `/healthz`. No application secrets, database, or persistent volume are needed.
+`npm run build` produces `dist/` for any static host. The included Dockerfile builds and audits the site, then serves the static output with Nginx and runs the enquiry relay under Supervisor. In Coolify, use the Dockerfile build pack, branch `main`, and container port `80`. The Docker health check verifies Nginx and relay configuration. The runtime variables documented above are required; the website needs no database or persistent volume.
 
 The Coolify application is in the **Red Barn** project on `dev.pyrito.com`, connected to this public repository. To publish an update, commit and push to `main`, then choose **Actions → Deploy** in Coolify. Automatic push webhooks are not configured. Keystatic stays available through local development; the public deployment serves the saved content only.
 
