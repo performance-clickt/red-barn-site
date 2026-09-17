@@ -9,7 +9,7 @@ const articleSources=JSON.parse(await fs.readFile('migration/seo/article-sources
 let headings=[];
 for(const p of pages){
  const html=origin?await (async()=>{let r=await fetch(origin+p.path,{redirect:'manual'});assert.equal(r.status,200,p.path);assert.match(r.headers.get('x-robots-tag')||'',/noindex/);return r.text()})():await fs.readFile(`dist${p.path==='/'?'':p.path}/index.html`,'utf8');
- const $=cheerio.load(html);assert.equal($('title').text(),p.title,p.path);assert.equal($('meta[name="description"]').attr('content'),p.description,p.path);assert.equal($('h1').length,1,p.path);assert.equal($('h1').text().trim(),p.h1,p.path);assert.equal($('link[rel="canonical"]').attr('href'),canonical+p.path,p.path);
+ const $=cheerio.load(html);assert.doesNotMatch($('main').text(),/We’ll email your results|values profile.*emailed to you/i,p.path);assert.equal($('title').text(),p.title,p.path);assert.equal($('meta[name="description"]').attr('content'),p.description,p.path);assert.equal($('h1').length,1,p.path);assert.equal($('h1').text().trim(),p.h1,p.path);assert.equal($('link[rel="canonical"]').attr('href'),canonical+p.path,p.path);
  const schemas=$('script[type="application/ld+json"]').map((_,el)=>JSON.parse($(el).text())).get();
  if(p.path.startsWith('/insights/')){const source=articleSources.find(a=>a.source==='insights__'+p.path.split('/').at(-1)+'.html');const article=schemas.find(s=>s['@type']==='BlogPosting');assert.equal(article.author.name,source.author);assert.equal(article.datePublished,source.datePublished.slice(0,10));}
  let last=0;$('main').find('h1,h2,h3,h4,h5,h6').each((_,el)=>{let n=Number(el.tagName[1]);if(n>last+1)headings.push({path:p.path,heading:$(el).text(),from:last,to:n});last=n});
