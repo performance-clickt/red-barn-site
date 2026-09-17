@@ -5,6 +5,7 @@ const inventory=JSON.parse(await fs.readFile('migration/content-inventory.json',
 const errors=[];let links=0,images=0,blocks=0;
 const normalize=s=>s.normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g,'');
 for(const p of inventory){
+ if(['home','about','cart'].includes(p.slug))continue;
  const route=p.slug==='index'?'':p.slug;
  const file=path.join('dist',route,'index.html');
  let html;try{html=await fs.readFile(file,'utf8')}catch{errors.push({route,error:'Missing output page'});continue;}
@@ -26,7 +27,7 @@ for(const p of inventory){
    continue;
   }
   let compared = ['index','home'].includes(p.slug) ? block.replace(/^Book an intro call/, '') : block;
-  if(['index','home'].includes(p.slug)) {
+  if(['index','home','growing','harvest'].includes(p.slug)) {
    compared=compared.replace('Personalized “values profile” emailed to you (with conversation prompts)', 'Personalized “values profile” to download (with conversation prompts)');
    if(compared==='We’ll email your results and occasional insights. You can unsubscribe anytime.') compared='View your results instantly and download your reflection. Your answers stay in your browser; taking the reflection does not subscribe you to emails.';
   }

@@ -1,9 +1,10 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import {reader,shortTitle} from '../../lib/content';
+const metadata=await reader.singletons.insights.readOrThrow();
 const posts=(await reader.collections.posts.all()).sort((a,b)=>(b.entry.date||'').localeCompare(a.entry.date||''));
 ---
-<SiteLayout title="Insights — Red Barn Investment Counsel" description="Perspectives from Red Barn Investment Counsel on markets, investing and the long view.">
-  <header class="page-hero section-shell"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span>Insights</span></nav><h1>Perspectives <br />for the long view.</h1></header>
+<SiteLayout title={metadata.seoTitle} description={metadata.description} breadcrumbs={[{name:"Home",path:"/"},{name:"Insights",path:"/insights"}]}>
+  <header class="page-hero section-shell"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span>/</span><span>Insights</span></nav><h1>{metadata.h1}</h1></header>
   <section class="post-grid section-shell" aria-label="All insights">{posts.map(({slug,entry})=><article class="post-card"><time datetime={entry.date||''}>{entry.date ? new Date(entry.date+'T12:00:00Z').toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}) : 'Insights'}</time><h2><a href={`/insights/${slug}`}>{shortTitle(entry.title)}</a></h2><p>{entry.description}</p><a class="text-link" href={`/insights/${slug}`}>Read insight <span aria-hidden="true">↗</span></a></article>)}</section>
 </SiteLayout>

@@ -2,10 +2,15 @@
 import '../styles/global.css';
 import '../styles/responsive.css';
 import { reader } from '../lib/content';
-interface Props { title?: string; description?: string; image?: string | null; home?: boolean; }
-const { title = 'Red Barn Investment Counsel', description = 'Risk-managed, tax-aware portfolios and family-first planning. Investing for generations.', image, home = false } = Astro.props;
+import { canonicalUrl, serializeJsonLd, breadcrumbSchema, type Breadcrumb } from '../lib/seo';
+interface Props { title?: string; description?: string; image?: string | null; home?: boolean; article?: { headline: string; date?: string | null; author?: string | null }; breadcrumbs?: Breadcrumb[]; }
+const { title = 'Red Barn Investment Counsel', description = 'Risk-managed, tax-aware portfolios and family-first planning. Investing for generations.', image, home = false, article, breadcrumbs } = Astro.props;
 const settings = await reader.singletons.settings.readOrThrow();
-const canonical = new URL(home ? "/" : Astro.url.pathname, Astro.site);
+const canonical = canonicalUrl(home ? "/" : Astro.url.pathname);
+const organization = { '@context': 'https://schema.org', '@type': 'Organization', '@id': canonicalUrl('/') + '#organization', name: 'Red Barn Investment Counsel', url: canonicalUrl('/'), telephone: settings.phone, email: settings.email, address: settings.address, parentOrganization: { '@type': 'Organization', name: 'Vesta Wealth Partners' } };
+const schemas: unknown[] = [organization];
+if (breadcrumbs) schemas.push(breadcrumbSchema(breadcrumbs));
+if (article) schemas.push({ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: article.headline, description, url: canonical, mainEntityOfPage: canonical, ...(article.date ? { datePublished: article.date } : {}), ...(article.author ? { author: { '@type': 'Person', name: article.author } } : {}), publisher: { '@id': canonicalUrl('/') + '#organization' }, ...(image ? { image: new URL(image, canonicalUrl('/')).href } : {}) });
 const navigation = [
   { label: 'Home', href: '/' },
   { label: 'Seasons', href: '/seasons', links: [['Sowing', '/sowing'], ['Growing', '/growing'], ['Harvest', '/harvest'], ['Legacy', '/legacy']] },
@@ -20,8 +25,9 @@ const navigation = [
     <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title><meta name="description" content={description} /><link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#B01F29" />
-    <meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:type" content="website" /><meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:type" content={article ? 'article' : 'website'} /><meta property="og:url" content={canonical} />
     {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
+    {schemas.map(schema => <script is:inline type="application/ld+json" set:html={serializeJsonLd(schema)} />)}
     <link rel="icon" href="/images/b27dc70ad2-RedBarn-Logo.webp" type="image/webp" />
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>
@@ -41,7 +47,7 @@ const navigation = [
     <main id="main"><slot /></main>
     <footer class="site-footer">
       <div class="footer-top"><a href="/" class="footer-wordmark">Think Further.</a><a class="button button-primary" href="/start-here">Start Here <span aria-hidden="true">↗</span></a></div>
-      <div class="footer-grid"><div><p class="footer-name">Red Barn<br />Investment Counsel</p><p>A division of Vesta Wealth Partners</p></div><div><h2>Visit</h2><p class="address">{settings.address}</p></div><div><h2>Get in touch</h2><a href={`tel:+1${settings.phone.replace(/\D/g,'')}`}>{settings.phone}</a><a href={`mailto:${settings.email}`}>{settings.email}</a></div><div><h2>Explore</h2><a href="/our-team">Our Team</a><a href="/insights">Insights</a><a href="/events">Events</a><a href="/advisor-relationships">For Advisors</a></div></div>
+      <div class="footer-grid"><div><p class="footer-name">Red Barn<br />Investment Counsel</p><p>A division of Vesta Wealth Partners</p></div><div><h2>Visit</h2><p class="address">{settings.address}</p></div><div><h2>Get in touch</h2><a href={`tel:+1${settings.phone.replace(/\D/g,'')}`}>{settings.phone}</a><a href={`mailto:${settings.email}`}>{settings.email}</a></div><div><h2>Explore</h2><a href="/our-team">Our Team</a><a href="/insights">Insights</a><a href="/events">Events</a><a href="/contact">Contact</a><a href="/advisor-relationships">For Advisors</a></div></div>
       <div class="footer-legal"><p>{settings.disclosure}</p><p>{settings.riskDisclosure}</p><div><span>© {new Date().getFullYear()} Red Barn Investment Counsel</span><nav aria-label="Legal"><a href="/complaints">Client Concerns</a><a href="/privacy-policy">Privacy Policy</a><a href={settings.conflictsUrl}>Conflicts of Interest</a></nav></div></div>
     </footer>
     <script>

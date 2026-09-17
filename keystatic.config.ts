@@ -3,6 +3,8 @@ const image = (label: string, bucket = 'homepage') => fields.image({ label, dire
 const text = (label: string) => fields.text({ label, validation: { isRequired: true } });
 const base = (bucket: string) => ({
   title: fields.slug({ name: { label: 'Page title' } }),
+  seoTitle: fields.text({ label: 'SEO title' }),
+  h1: fields.text({ label: 'Main heading' }),
   description: fields.text({ label: 'Search description', multiline: true }),
   heroImage: image('Lead image', bucket), heroAlt: fields.text({ label: 'Image description' }),
   sourceUrl: fields.url({ label: 'Original source (migration reference)' }),
@@ -12,8 +14,12 @@ export default config({
   storage: { kind: 'local' },
   ui: { brand: { name: 'Red Barn · Content' } },
   singletons: {
+    insights: singleton({ label: 'Insights listing', path: 'src/content/insights', format: { data: 'json' }, schema: {
+      seoTitle: text('SEO title'), description: text('Search description'), h1: text('Main heading'),
+    }}),
     homepage: singleton({ label: 'Homepage', path: 'src/content/homepage', format: { data: 'json' }, schema: {
       headline: text('Opening headline'), tagline: text('Opening description'),
+      seoTitle: text('SEO title'), seoDescription: text('Search description'), seoContext: text('Introduction context'),
       intro: fields.text({ label: 'Who we are', multiline: true }),
       gallery: fields.array(fields.object({ image: image('Photo'), alt: text('Photo description') }), { label: 'Hero gallery (five photos)', itemLabel: props => props.fields.alt.value, validation: { length: { min: 5, max: 5 } } }),
       differences: fields.array(fields.object({ title: text('Title'), body: fields.text({ label: 'Description', multiline: true }) }), { label: 'The Red Barn difference', itemLabel: props => props.fields.title.value }),

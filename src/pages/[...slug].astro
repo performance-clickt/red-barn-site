@@ -8,25 +8,27 @@ import BlogPost from '../components/BlogPost.astro';
 import SiteLayout from '../layouts/SiteLayout.astro';
 import SourceVideo from '../components/SourceVideo.astro';
 import { reader, renderBody, shortTitle } from '../lib/content';
+import { EXCLUDED_PAGE_SLUGS } from '../lib/seo';
 import inventory from '../../migration/content-inventory.json';
 export async function getStaticPaths() {
   const pages = await reader.collections.pages.all();
   const posts = await reader.collections.posts.all();
-  return [...pages.filter(p=>p.slug!=='financial-reflection').map(p=>({params:{slug:p.slug},props:{entry:p.entry,post:false}})),...posts.map(p=>({params:{slug:`insights/${p.slug}`},props:{entry:p.entry,post:true}}))];
+  return [...pages.filter(p=>p.slug!=='financial-reflection' && !EXCLUDED_PAGE_SLUGS.has(p.slug)).map(p=>({params:{slug:p.slug},props:{entry:p.entry,post:false}})),...posts.map(p=>({params:{slug:`insights/${p.slug}`},props:{entry:p.entry,post:true}}))];
 }
 const {entry,post}=Astro.props;
 const slug=Astro.params.slug!;
-const title=shortTitle(entry.title);
+const legacyTitle=shortTitle(entry.title);
+const title=entry.h1 || legacyTitle;
 const approachPage=['our-approach','discretionary-management','pension-strategy','family-meeting'].includes(slug);
 const seasonPage=['seasons','sowing','growing','harvest','legacy'].includes(slug);
 const galleryHero=!post && !['privacy-policy','complaints','careers','events'].includes(slug);
 let html=await renderBody(entry);
 // The lead photograph has its own full-width placement; do not repeat it in the article.
 if(!post && entry.heroImage) html=html.replace(/<p><img\b[^>]*><\/p>/, '');
-html=html.replace(/<h4>([\s\S]*?)<\/h4>/g, (match, body) => body.replace(/<[^>]+>/g,'').length > 120 ? `<p>${body}</p>` : match);
+html=html.replace(/<h[34]>([\s\S]*?)<\/h[34]>/g, (match, body) => body.replace(/<[^>]+>/g,'').length > 120 ? `<p>${body}</p>` : match);
 if(slug==='our-team') html=html.replace(/<ul><li><p>Expand Bio<\/p>([\s\S]*?)<\/li><\/ul>/g, '<details class="bio-details"><summary>Expand Bio</summary>$1</details>');
 const firstHeading=html.match(/^<h2>(.*?)<\/h2>/);
-if(firstHeading && firstHeading[1].replace(/<[^>]+>/g,'').trim().toLowerCase()===title.toLowerCase()) html=html.slice(firstHeading[0].length);
+if(firstHeading && firstHeading[1].replace(/<[^>]+>/g,'').trim().toLowerCase()===legacyTitle.toLowerCase()) html=html.slice(firstHeading[0].length);
 if(approachPage) html=html.replace(/<p>[^<]*\/\/<\/p>/g,'');
 let heroSubtitle='';
 if(galleryHero){const lead=html.match(/^<h2>(.*?)<\/h2>/);if(lead){heroSubtitle=lead[1].replace(/<[^>]+>/g,'');html=html.slice(lead[0].length);}}
@@ -37,9 +39,11 @@ const source=inventory.find(p=>p.slug===slug);
 const quizUrl=slug==='financial-quiz'?settings.roadmapUrl:null;
 const related: Record<string,string[][]>={seasons:[['Sowing','/sowing'],['Growing','/growing'],['Harvest','/harvest'],['Legacy','/legacy']],'our-approach':[['Discretionary Management','/discretionary-management'],['Pension Strategy','/pension-strategy'],['The Family Meeting','/family-meeting']],'our-story':[['Our Team','/our-team'],['Advisor Relationships','/advisor-relationships'],['Careers','/careers']]};
 ---
-<SiteLayout title={entry.title} description={entry.description} image={entry.heroImage}>
+<SiteLayout title={entry.seoTitle || entry.title} description={entry.description} image={entry.heroImage}
+  article={post ? {headline:title, date:'date' in entry && typeof entry.date === 'string' ? entry.date : null, author:'author' in entry && typeof entry.author === 'string' ? entry.author : null} : undefined}
+  breadcrumbs={!post && !galleryHero ? [{name:"Home",path:"/"},{name:legacyTitle,path:`/${slug}`}] : undefined}>
   {post ? <BlogPost title={title} html={html} slug={slug} date={'date' in entry && typeof entry.date === 'string' ? entry.date : null} author={'author' in entry && typeof entry.author === 'string' ? entry.author : null} /> : <>
-  {galleryHero ? <PageHero title={title} subtitle={heroSubtitle} image={entry.heroImage} alt={entry.heroAlt} links={related[slug]} /> : <header class="page-hero section-shell"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>{title}</span></nav><h1>{title}</h1>{entry.heroImage && <img class="page-lead-image" src={entry.heroImage} alt={entry.heroAlt||''} width="1500" height="850" fetchpriority="high" />}</header>}
+  {galleryHero ? <PageHero title={title} subtitle={heroSubtitle} image={entry.heroImage} alt={entry.heroAlt} links={related[slug]} /> : <header class="page-hero section-shell"><nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>{legacyTitle}</span></nav><h1>{title}</h1>{entry.heroImage && <img class="page-lead-image" src={entry.heroImage} alt={entry.heroAlt||''} width="1500" height="850" fetchpriority="high" />}</header>}
   {slug==='contact' ? <ContactContent html={html} email={settings.email} phone={settings.phone} address={settings.address}/> : approachPage ? <ApproachContent html={html} slug={slug} image={entry.heroImage} alt={entry.heroAlt}/> : seasonPage ? <SeasonContent html={html} slug={slug} image={entry.heroImage} alt={entry.heroAlt}/> : slug==='start-here' ? <StartHereContent html={html} image={entry.heroImage} alt={entry.heroAlt} email={settings.email}/> : <article class="page-content" set:html={html} />}
   </>}
   {quizUrl && <section class="quiz-section section-shell" aria-label="Financial reflection"><a class="button button-primary" href={quizUrl} target="_blank" rel="noopener noreferrer">{slug==='financial-reflection'?'Start your Financial Values Reflection':'Explore your Financial Freedom Roadmap'} <span aria-hidden="true">↗</span></a><p class="quiz-launch-note">Opens in a new window.</p></section>}

@@ -23,3 +23,5 @@
 html:not(.js) .hero-scroll{height:auto;margin-top:0;padding-top:0}html:not(.js) .hero-stage{height:auto;position:relative;top:0;display:flex;flex-direction:column}html:not(.js) .hero-gallery{position:relative;inset:auto;height:70svh;order:0;margin:12px}html:not(.js) .hero-reveal{order:1;opacity:1!important;transform:none!important;padding-block:50px}html:not(.js) .hero-cover-copy{top:16svh}html:not(.js) .scroll-cue{display:none}html:not(.js) .contact-form button{display:none}
 
 .bio-details{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;margin:25px 0 70px}.bio-details summary{font:14px 'Space Grotesk';color:var(--red)}
+
+.intro-context { color: var(--red, #b01f29); font-size: clamp(1.35rem, 2.5vw, 2.25rem); max-width: 32ch; margin: 0 0 2rem; text-wrap: balance; }

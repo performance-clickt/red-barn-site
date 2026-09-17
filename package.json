@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev --host 127.0.0.1",
-    "build": "node scripts/performance/prepare-images.mjs && astro check && astro build && node scripts/performance/optimize-html.mjs",
+    "build": "node scripts/performance/prepare-images.mjs && astro check && astro build && node scripts/performance/optimize-html.mjs && node scripts/prepare-seo.mjs",
     "preview": "astro preview --host 127.0.0.1",
     "check": "astro check",
     "audit:content": "node scripts/audit-content.mjs",

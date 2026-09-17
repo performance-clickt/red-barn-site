@@ -41,14 +41,14 @@ export default function HeroGallery({ headline, tagline, gallery, email }: Props
   return <section className="hero-scroll" ref={container} aria-label="Investing for generations">
     <span className="connect-anchor" id="connect" />
     <div className="hero-stage">
+      <motion.div className="hero-cover-copy" style={reduced ? {} : { opacity: titleOpacity }}>
+        <span className="hero-kicker">Investing for generations</span><h1>{headline}</h1><p>{tagline}</p>
+      </motion.div>
       <motion.div className="hero-reveal" style={reduced ? {} : { opacity: revealOpacity, scale: revealScale }} inert={hydrated && !accessible && !reduced}>
         <div className="reveal-intro"><span className="eyebrow">Investing for generations</span><h2>Start with <br />a conversation.</h2><p>Take 15 minutes to meet your team and share your financial goals.</p><a className="text-link" href="/start-here">What to expect <span aria-hidden="true">↗</span></a></div>
         <div className="reveal-form"><ContactForm email={email} compact /></div>
       </motion.div>
       <div className="hero-gallery" aria-hidden="true">{gallery.map((photo, index) => <BentoCell key={index} photo={photo} index={index} progress={scrollYProgress} compact={compact} />)}</div>
-      <motion.div className="hero-cover-copy" style={reduced ? {} : { opacity: titleOpacity }}>
-        <span className="hero-kicker">Investing for generations</span><h1>{headline}</h1><p>{tagline}</p>
-      </motion.div>
       <motion.a className="scroll-cue" href="#connect" tabIndex={accessible ? -1 : 0} style={reduced ? {} : { opacity: titleOpacity }}>Scroll to open your next chapter <span aria-hidden="true">↓</span></motion.a>
     </div>
   </section>;

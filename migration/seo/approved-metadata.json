@@ -1,0 +1,240 @@
+[
+  {
+    "id": "P01",
+    "path": "/",
+    "title": "Red Barn Investment Counsel - A Division of Vesta Wealth Partners",
+    "h1": "Think Further.",
+    "description": "Calgary-based Red Barn Investment Counsel, a division of Vesta Wealth Partners, combines investment management with planning for family wealth and legacy."
+  },
+  {
+    "id": "P02",
+    "path": "/seasons",
+    "title": "Wealth Planning for Every Life Stage | Red Barn",
+    "h1": "A strategy for every season",
+    "description": "Explore investment and wealth planning for every season: building your foundation, growing your assets, funding retirement and preparing your legacy."
+  },
+  {
+    "id": "P03",
+    "path": "/sowing",
+    "title": "Building Your Financial Foundation | Red Barn",
+    "h1": "Sowing: build your financial foundation",
+    "description": "Build your financial foundation with consistent contributions, a considered account mix and an investment approach shaped around your goals."
+  },
+  {
+    "id": "P04",
+    "path": "/growing",
+    "title": "Growing Your Wealth | Red Barn",
+    "h1": "Growing: make your wealth work harder",
+    "description": "Put your peak earning years to work with tax-aware investing, portfolio diversification and a plan that grows with your family’s priorities."
+  },
+  {
+    "id": "P05",
+    "path": "/harvest",
+    "title": "Retirement Income Planning in Calgary | Red Barn",
+    "h1": "Harvest: turn your wealth into retirement income",
+    "description": "Plan how your investments can support retirement spending, with a focus on cash flow, tax-aware withdrawals and long-term portfolio resilience."
+  },
+  {
+    "id": "P06",
+    "path": "/legacy",
+    "title": "Family Wealth & Legacy Planning | Red Barn",
+    "h1": "Legacy: stewardship that outlives you",
+    "description": "Prepare the next generation to steward your family’s wealth through shared values, clearer responsibilities and coordinated legacy planning."
+  },
+  {
+    "id": "P07",
+    "path": "/our-approach",
+    "title": "Our Approach to Wealth Management | Red Barn",
+    "h1": "Institutional discipline. Family priorities.",
+    "description": "See how Red Barn combines discretionary investment management, pension-style portfolio thinking and family conversations around what matters most."
+  },
+  {
+    "id": "P08",
+    "path": "/discretionary-management",
+    "title": "Discretionary Investment Management | Red Barn",
+    "h1": "Discretionary investment management",
+    "description": "Understand how Red Barn manages portfolios within an agreed mandate, with ongoing investment decisions, risk oversight and clear reporting."
+  },
+  {
+    "id": "P09",
+    "path": "/pension-strategy",
+    "title": "Pension-Style Investing | Red Barn",
+    "h1": "A pension-style approach to investing",
+    "description": "Explore a pension-style investment approach that considers public and private markets, diversification, liquidity and your individual circumstances."
+  },
+  {
+    "id": "P10",
+    "path": "/family-meeting",
+    "title": "Family Wealth Conversations | Red Barn",
+    "h1": "Bring your family into the conversation",
+    "description": "Create space for meaningful conversations about wealth, values and responsibility. Discover how Red Barn helps families prepare for the next generation."
+  },
+  {
+    "id": "P11",
+    "path": "/our-story",
+    "title": "Our Story | Red Barn Investment Counsel",
+    "h1": "Why we built Red Barn",
+    "description": "Discover the thinking behind Red Barn Investment Counsel and our commitment to investment discipline, family priorities and long-term stewardship."
+  },
+  {
+    "id": "P12",
+    "path": "/our-team",
+    "title": "Our Team | Red Barn Investment Counsel",
+    "h1": "Meet your investment team",
+    "description": "Meet the people behind Red Barn Investment Counsel and learn about the experience and perspectives they bring to managing your family’s wealth."
+  },
+  {
+    "id": "P13",
+    "path": "/advisor-relationships",
+    "title": "Investment Management for Advisors | Red Barn",
+    "h1": "A discretionary investment partner for advisors",
+    "description": "Explore working with Red Barn for discretionary investment management while maintaining your client relationships and a coordinated advice experience."
+  },
+  {
+    "id": "P14",
+    "path": "/careers",
+    "title": "Careers | Red Barn Investment Counsel",
+    "h1": "Careers at Red Barn",
+    "description": "Learn about Red Barn Investment Counsel and how to express your interest in joining a team focused on investment discipline and family outcomes."
+  },
+  {
+    "id": "P15",
+    "path": "/start-here",
+    "title": "Book an Introductory Call | Red Barn",
+    "h1": "Start with a conversation",
+    "description": "Book a 15-minute introductory conversation with Red Barn. Share your goals, meet the team and explore whether our approach is right for you."
+  },
+  {
+    "id": "P16",
+    "path": "/contact",
+    "title": "Contact Red Barn Investment Counsel | Calgary",
+    "h1": "Contact Red Barn",
+    "description": "Contact Red Barn Investment Counsel in Calgary. Find our office details, phone number and enquiry form, or arrange an introductory conversation."
+  },
+  {
+    "id": "P17",
+    "path": "/financial-reflection",
+    "title": "Financial Values Reflection | Red Barn",
+    "h1": "Financial Values Reflection",
+    "description": "Explore the values behind your financial decisions through 12 reflective questions. View your financial archetype and download your results as a PDF."
+  },
+  {
+    "id": "P18",
+    "path": "/financial-quiz",
+    "title": "Financial Freedom Roadmap | Red Barn",
+    "h1": "Financial Freedom Roadmap",
+    "description": "Explore your financial priorities with Red Barn’s Financial Freedom Roadmap and use the experience to support a conversation about your next steps."
+  },
+  {
+    "id": "P19",
+    "path": "/insights",
+    "title": "Investment & Retirement Insights | Red Barn",
+    "h1": "Insights for your financial life",
+    "description": "Read Red Barn’s perspectives on investing, retirement, family wealth and market developments, with practical context for your financial decisions."
+  },
+  {
+    "id": "P20",
+    "path": "/events",
+    "title": "Events & Family Wealth Conversations | Red Barn",
+    "h1": "Red Barn events",
+    "description": "Explore Red Barn events and conversations about investing, family wealth and legacy. Find event details and information about taking part."
+  },
+  {
+    "id": "P21",
+    "path": "/complaints",
+    "title": "Complaints Process | Red Barn Investment Counsel",
+    "h1": "Our complaints process",
+    "description": "Find out how to raise a complaint with Red Barn Investment Counsel, what information to provide and how the complaints process works."
+  },
+  {
+    "id": "P22",
+    "path": "/privacy-policy",
+    "title": "Privacy Policy | Red Barn Investment Counsel",
+    "h1": "Privacy policy",
+    "description": "Read how Red Barn Investment Counsel collects, uses and protects personal information, and how to contact us with privacy questions."
+  },
+  {
+    "id": "P23",
+    "path": "/insights/canadian-productivity",
+    "title": "Canada’s Productivity Challenge | Red Barn",
+    "h1": "Canada’s productivity challenge",
+    "description": "Explore Canada’s productivity challenge and its possible implications for investment, capital flows and the Canadian dollar."
+  },
+  {
+    "id": "P24",
+    "path": "/insights/ai-bubble",
+    "title": "Is AI in a Bubble? | Red Barn",
+    "h1": "Is AI in a bubble?",
+    "description": "Explore the debate around an AI investment bubble, including valuations, volatility and what changing expectations could mean for portfolios."
+  },
+  {
+    "id": "P25",
+    "path": "/insights/interest-rates",
+    "title": "Interest Rates and Investment Markets | Red Barn",
+    "h1": "What interest rates mean for investment markets",
+    "description": "Examine how interest-rate decisions influence borrowing costs, investment valuations and the wider market environment."
+  },
+  {
+    "id": "P26",
+    "path": "/insights/oil-inventory-price-affects",
+    "title": "Oil Inventories and Price Risk | Red Barn",
+    "h1": "How oil inventories affect price risk",
+    "description": "Explore how oil inventories and strategic reserves can influence energy prices and the market’s exposure to supply disruptions."
+  },
+  {
+    "id": "P27",
+    "path": "/insights/event-driven-diversification",
+    "title": "Event-Driven Investing & Diversification | Red Barn",
+    "h1": "Event-driven investing and diversification",
+    "description": "Learn how event-driven strategies, including merger arbitrage, may introduce different sources of return and risk alongside stocks and bonds."
+  },
+  {
+    "id": "P28",
+    "path": "/insights/inflation-decelerating",
+    "title": "Has Inflation Peaked? | Red Barn",
+    "h1": "Has inflation peaked?",
+    "description": "Review the evidence behind the question “Has inflation peaked?” and the investment considerations raised by changing inflation expectations."
+  },
+  {
+    "id": "P29",
+    "path": "/insights/portfolio-management-the-next-decade",
+    "title": "Portfolio Management: The Next Decade | Red Barn",
+    "h1": "Portfolio management in the next decade",
+    "description": "Explore the forces that could shape portfolio management in the next decade, from artificial intelligence to geopolitical and market change."
+  },
+  {
+    "id": "P30",
+    "path": "/insights/ai-and-the-magnificent-7",
+    "title": "AI and the Magnificent Seven | Red Barn",
+    "h1": "AI and the Magnificent Seven",
+    "description": "Examine AI’s influence on the Magnificent Seven and the questions it raises about valuations, market concentration and portfolio risk."
+  },
+  {
+    "id": "P31",
+    "path": "/insights/inflation-direction-matters",
+    "title": "Inflation: Why Direction Matters | Red Barn",
+    "h1": "Inflation: why direction matters",
+    "description": "Explore why the direction of inflation matters for investors, including the role of oil, commodities and changing price pressures."
+  },
+  {
+    "id": "P32",
+    "path": "/insights/3742q6tlkm9bvabedd10o2f8ayl4xm",
+    "title": "Commodities and AI | Red Barn",
+    "h1": "Commodities and AI",
+    "description": "Explore developments in commodities and artificial intelligence, with context on oil, gold and the investment themes shaping markets."
+  },
+  {
+    "id": "P33",
+    "path": "/insights/oil-supply-disruptions-and-what-markets-may-be-missing",
+    "title": "Oil Supply Disruptions & Market Risk | Red Barn",
+    "h1": "Oil, supply disruptions, and what markets may be missing",
+    "description": "Examine oil supply disruptions, inventories and geopolitical risks—and where market expectations may overlook important vulnerabilities."
+  },
+  {
+    "id": "P34",
+    "path": "/insights/polymarket",
+    "title": "Polymarket and Portfolio Diversification | Red Barn",
+    "h1": "Polymarket and portfolio diversification",
+    "description": "Explore prediction markets through Polymarket, alongside commentary on portfolio diversification and the limits of market-implied expectations."
+  }
+]
