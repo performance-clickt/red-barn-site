@@ -1,14 +1,15 @@
 import fs from 'node:fs/promises';
-import path from 'node:path';
 import * as cheerio from 'cheerio';
+const baseUrl=process.env.AUDIT_BASE_URL || 'http://127.0.0.1:4322';
+const checked=new Map();
+async function exists(url){if(!checked.has(url))checked.set(url,fetch(baseUrl+url,{method:'HEAD'}).then(r=>r.ok));return checked.get(url);}
 const inventory=JSON.parse(await fs.readFile('migration/content-inventory.json','utf8'));
 const errors=[];let links=0,images=0,blocks=0;
 const normalize=s=>s.normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g,'');
 for(const p of inventory){
  if(['home','about','cart'].includes(p.slug))continue;
  const route=p.slug==='index'?'':p.slug;
- const file=path.join('dist',route,'index.html');
- let html;try{html=await fs.readFile(file,'utf8')}catch{errors.push({route,error:'Missing output page'});continue;}
+ let html;try{const response=await fetch(baseUrl+'/'+route);if(!response.ok)throw new Error(String(response.status));html=await response.text();}catch{errors.push({route,error:'Missing output page'});continue;}
  const $=cheerio.load(html);$('script,style').remove();const text=normalize($('main').text());
  // Approved cleanup: About is consolidated into Our Story; Contact's imported placeholder copy is replaced.
  if(p.slug==='about'&&!$('meta[http-equiv=refresh]').attr('content')?.includes('/our-story/'))errors.push({route,error:'About redirect missing'});
@@ -40,11 +41,11 @@ for(const p of inventory){
  for(const el of $('a[href],img[src]').toArray()){
   const image=el.name==='img';const url=$(el).attr(image?'src':'href');if(image)images++;else links++;
   if(!url?.startsWith('/')||url.startsWith('//'))continue;
-  const pathname=decodeURI(url.split(/[?#]/)[0]);const dest=path.join('dist',pathname);
-  let found=false;for(const f of [dest,path.join(dest,'index.html')]){try{if((await fs.stat(f)).isFile())found=true;}catch{}}
+  const pathname=decodeURI(url.split(/[?#]/)[0]);
+  const found=await exists(pathname);
   if(!found)errors.push({route,error:image?'Missing image':'Broken internal link',url});
  }
 }
-for(const p of ['dist/keystatic','dist/api/keystatic']){try{await fs.access(p);errors.push({error:'Admin routes present in production',path:p});}catch{}}
+for(const p of ['/keystatic','/api/keystatic'])if(await exists(p))errors.push({error:'Retired Keystatic route still available',path:p});
 const result={pages:inventory.length,paragraphsChecked:blocks,linksChecked:links,imagesChecked:images,errors};
 await fs.writeFile('migration/content-audit.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));if(errors.length)process.exitCode=1;

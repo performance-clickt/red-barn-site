@@ -6,3 +6,8 @@ dist
 .env.*
 migration/source
 .DS_Store
+
+data
+.emdash
+test-results
+playwright-report

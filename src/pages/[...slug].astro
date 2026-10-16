@@ -10,13 +10,11 @@ import SourceVideo from '../components/SourceVideo.astro';
 import { reader, renderBody, shortTitle } from '../lib/content';
 import { EXCLUDED_PAGE_SLUGS } from '../lib/seo';
 import inventory from '../../migration/content-inventory.json';
-export async function getStaticPaths() {
-  const pages = await reader.collections.pages.all();
-  const posts = await reader.collections.posts.all();
-  return [...pages.filter(p=>p.slug!=='financial-reflection' && !EXCLUDED_PAGE_SLUGS.has(p.slug)).map(p=>({params:{slug:p.slug},props:{entry:p.entry,post:false}})),...posts.map(p=>({params:{slug:`insights/${p.slug}`},props:{entry:p.entry,post:true}}))];
-}
-const {entry,post}=Astro.props;
 const slug=Astro.params.slug!;
+const post=slug.startsWith('insights/');
+if(EXCLUDED_PAGE_SLUGS.has(slug)) return Astro.rewrite('/404');
+const entry=await reader.collections[post?'posts':'pages'].read(post?slug.slice('insights/'.length):slug);
+if(!entry) return Astro.rewrite('/404');
 const legacyTitle=shortTitle(entry.title);
 const title=entry.h1 || legacyTitle;
 const approachPage=['our-approach','discretionary-management','pension-strategy','family-meeting'].includes(slug);

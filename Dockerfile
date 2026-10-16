@@ -1,19 +1,27 @@
 FROM node:22-bookworm-slim AS build
 WORKDIR /app
 ENV ASTRO_TELEMETRY_DISABLED=1
+ARG EMDASH_SITE_URL
+ENV EMDASH_SITE_URL=$EMDASH_SITE_URL
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run build && npm run audit:content
+RUN npm run build && npm run test:cms
 
-FROM nginx:stable-alpine
-RUN apk add --no-cache nodejs supervisor
-COPY server /app/server
+FROM node:22-bookworm-slim
+RUN apt-get update && apt-get install -y --no-install-recommends nginx supervisor ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
+ENV NODE_ENV=production HOST=127.0.0.1 PORT=4321 EMDASH_DATA_DIR=/app/data
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/public ./public
+COPY --from=build /app/seed ./seed
+COPY --from=build /app/package.json ./package.json
+COPY scripts/emdash/import-content.mjs ./scripts/emdash/import-content.mjs
+COPY server ./server
 COPY deploy/supervisord.conf /etc/supervisord.conf
 COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/dist /usr/share/nginx/html
+RUN rm -f /etc/nginx/sites-enabled/default && mkdir -p /app/data && chown -R node:node /app/data
 EXPOSE 80
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD wget -q -O /dev/null http://127.0.0.1/healthz && wget -q -O /dev/null http://127.0.0.1:3001/healthz || exit 1
-
+HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 CMD node -e "fetch('http://127.0.0.1/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]
