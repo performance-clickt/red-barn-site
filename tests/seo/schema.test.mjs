@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { siteSchema, breadcrumbSchema, serializeJsonLd, postalAddress, schemaAssetUrl } from '../../src/lib/seo.ts';
+import { siteSchema, breadcrumbSchema, serializeJsonLd, postalAddress, schemaAssetUrl, articlePublicationDate } from '../../src/lib/seo.ts';
 const settings={phone:'(587) 612-5511',email:'info@redbarninvestmentcounsel.ca',address:'103, 1025 - 10 st SE\nCalgary, Alberta, T2G 3E1'};
 const options={path:'/',title:'Red Barn Investment Counsel',description:'Investing for generations.',settings,assetOrigin:'https://staging.example.test'};
 const node=(schema,type)=>schema['@graph'].find(x=>x['@type']===type);
@@ -43,4 +43,16 @@ test('address edits never retain stale locality values and unsafe assets are omi
 test('CMS text cannot terminate the JSON-LD script element',()=>{
  const json=serializeJsonLd(siteSchema({...options,title:'</script><script>alert(1)</script>\u2028'}));
  assert.ok(!json.includes('<'));assert.ok(!json.includes('\u2028'));assert.ok(JSON.parse(json));
+});
+
+test('migrated publication timestamps retain recorded time zones without overriding CMS edits',()=>{
+ assert.equal(articlePublicationDate('/insights/canadian-productivity',{headline:'Story',date:'2026-09-11',author:'Greg Flower'}),'2026-09-11T08:52:36-06:00');
+ assert.equal(articlePublicationDate('/insights/canadian-productivity',{headline:'Story',date:'2026-09-12',author:'Greg Flower'}),'2026-09-12');
+ assert.equal(articlePublicationDate('/insights/canadian-productivity',{headline:'Story',date:'2026-09-11',author:'New Author'}),'2026-09-11');
+ assert.equal(articlePublicationDate('/insights/new',{headline:'Story',date:'2026-09-11',author:'Greg Flower'}),'2026-09-11');
+ const s=siteSchema({...options,path:'/insights/canadian-productivity',article:{headline:'Story',date:'2026-09-11',author:'Greg Flower'}});
+ assert.equal(node(s,'BlogPosting').author.url,'https://www.redbarninvestmentcounsel.ca/our-team#greg-flower');
+ assert.equal(node(s,'FinancialService').image,node(s,'FinancialService').logo.url);
+ const other=siteSchema({...options,article:{headline:'Story',author:'Quincy Harriman'}});
+ assert.equal(node(other,'BlogPosting').author.url,undefined);
 });

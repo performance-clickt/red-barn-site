@@ -44,7 +44,7 @@ for (const route of routes) {
   if (route.startsWith('/insights/')) {
     expect(article?.headline === $('h1').text(), route, 'Article headline differs from visible heading');
     expect(article?.author?.name === $('.article-byline>span').first().text().replace(/^By /, ''), route, 'Article author differs from visible author');
-    expect(article?.datePublished === $('.article-byline time').attr('datetime'), route, 'Article date differs from visible date');
+    expect(article?.datePublished?.slice(0, 10) === $('.article-byline time').attr('datetime'), route, 'Article date differs from visible date');
     expect(article?.mainEntityOfPage?.['@id'] === page?.['@id'] && page?.mainEntity?.['@id'] === article?.['@id'], route, 'Article/page relationship missing');
     expect(article?.publisher?.['@id'] === org?.['@id'], route, 'Article publisher unresolved');
     if (!article?.image) {
@@ -69,6 +69,8 @@ for (const route of routes) {
     const previous = load(old.html);
     // Astro regenerates hydration island UIDs when server modules change; these are not rendered content.
     $('astro-island').removeAttr('uid');previous('astro-island').removeAttr('uid');
+    // A biography fragment identifier has no rendered effect.
+    if(route === '/our-team') $('#greg-flower').removeAttr('id');
     expect($('body').html() === previous('body').html(), route, 'Visible body HTML changed');
     $('script[type="application/ld+json"]').remove();previous('script[type="application/ld+json"]').remove();
     expect($('head').html().replace(/>\s+</g, '><').trim() === previous('head').html().replace(/>\s+</g, '><').trim(), route, 'Non-schema head markup changed');

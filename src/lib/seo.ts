@@ -1,3 +1,5 @@
+import articleSources from '../../migration/seo/article-sources.json' with { type: 'json' };
+
 export const SITE_ORIGIN = 'https://www.redbarninvestmentcounsel.ca';
 export const EXCLUDED_PAGE_SLUGS = new Set(['home', 'about', 'cart', 'horizons', 'new-dropdown']);
 
@@ -62,6 +64,17 @@ function schemaDate(value?: string | null): string | undefined {
   return !Number.isNaN(parsed.valueOf()) && parsed.toISOString().slice(0, 10) === value ? value : undefined;
 }
 
+/** Recover recorded timestamps only while the CMS date and author still match the migrated article. */
+export function articlePublicationDate(path: string, article: ArticleMetadata): string | undefined {
+  const date = schemaDate(article.date);
+  if (!date) return undefined;
+  const source = articleSources.find(item => '/insights/' + item.source.replace(/^insights__|\.html$/g, '') === canonicalPath(path));
+  if (source && source.author === article.author?.trim() && source.datePublished.slice(0, 10) === date) {
+    return source.datePublished.replace(/([+-]\d{2})(\d{2})$/, '$1:$2');
+  }
+  return date;
+}
+
 export function siteSchema({ path, title, description, settings, assetOrigin, image, article, breadcrumbs }: SchemaOptions) {
   const route = canonicalPath(path);
   const canonical = canonicalUrl(route);
@@ -86,6 +99,7 @@ export function siteSchema({ path, title, description, settings, assetOrigin, im
       '@type': 'FinancialService', '@id': organizationId,
       name: 'Red Barn Investment Counsel', url: home, telephone: phone, email: settings.email,
       address: postalAddress(settings.address),
+      image: schemaAssetUrl('/images/b27dc70ad2-RedBarn-Logo.webp', assetOrigin),
       logo: { '@type': 'ImageObject', '@id': home + '#logo',
         url: schemaAssetUrl('/images/b27dc70ad2-RedBarn-Logo.webp', assetOrigin), width: 680, height: 445 },
       parentOrganization: { '@type': 'Organization', name: 'Vesta Wealth Partners' },
@@ -104,14 +118,15 @@ export function siteSchema({ path, title, description, settings, assetOrigin, im
   ];
   if (trail.length > 1) graph.push({ ...breadcrumbSchema(trail), '@id': breadcrumbId });
   if (article) {
-    const date = schemaDate(article.date);
+    const date = articlePublicationDate(route, article);
     const author = article.author?.trim();
     graph.push({
       '@type': 'BlogPosting', '@id': canonical + '#article', headline: article.headline, description,
       url: canonical, mainEntityOfPage: { '@id': pageId }, isPartOf: { '@id': websiteId }, inLanguage: 'en-CA',
       ...(date ? { datePublished: date } : {}),
       author: !author || author === 'Red Barn Investment Counsel'
-        ? { '@id': organizationId } : { '@type': 'Person', name: author },
+        ? { '@id': organizationId } : { '@type': 'Person', name: author,
+          ...(author === 'Greg Flower' ? { url: canonicalUrl('/our-team') + '#greg-flower' } : {}) },
       publisher: { '@id': organizationId }, ...(imageUrl ? { image: imageUrl } : {}),
     });
   }
