@@ -4,6 +4,10 @@ import { chromium } from '@playwright/test';
 import sharp from 'sharp';
 const reference=process.env.REFERENCE_URL || 'https://redbarn-preview.91.98.31.168.sslip.io';
 const candidate=process.env.CANDIDATE_URL || 'http://127.0.0.1:4322';
+const baselineDir=process.env.QA_BASELINE_DIR;
+const captureBaseline=process.env.QA_CAPTURE_BASELINE==='1';
+if(captureBaseline&&!baselineDir)throw new Error('QA_BASELINE_DIR is required when capturing a baseline');
+if(captureBaseline)await fs.mkdir(baselineDir,{recursive:true});
 const output=process.env.QA_OUTPUT || 'test-results/emdash-visual';await fs.mkdir(output,{recursive:true});
 const seed=JSON.parse(await fs.readFile('seed/red-barn.json','utf8'));
 const allRoutes=['/','/insights',...seed.content.pages.map(p=>'/'+p.slug),...seed.content.posts.map(p=>'/insights/'+p.slug)];
@@ -14,7 +18,10 @@ try {
   const contextOptions={viewport:{width,height:width===390?844:1000},deviceScaleFactor:1,locale:'en-CA',timezoneId:'America/Edmonton',reducedMotion:'reduce'};
   for(const route of routes) {
    const errors=[];
+   const baselineName=`${width}-${route==='/'?'home':encodeURIComponent(route)}.png`;
    const buffers=[];for(let i=0;i<2;i++){
+    if(i===0&&baselineDir&&!captureBaseline){buffers.push(await fs.readFile(path.join(baselineDir,baselineName)));continue;}
+    if(i===1&&captureBaseline){buffers.push(buffers[0]);continue;}
     const context=await browser.newContext(contextOptions);const page=await context.newPage();
     const response=await page.goto((i?candidate:reference)+route,{waitUntil:'networkidle'});
     if(response.status()!==200)errors.push(`${i?'candidate':'reference'} HTTP ${response.status()}`);
@@ -29,6 +36,7 @@ try {
     const broken=await page.evaluate(()=>[...document.images].filter(img=>!img.complete || !img.naturalWidth).map(img=>img.currentSrc || img.src));
     if(broken.length)errors.push(`${i?'candidate':'reference'} unloaded images: ${broken.join(', ')}`);
     buffers.push(await page.screenshot({fullPage:true,animations:'disabled'}));
+    if(i===0&&captureBaseline)await fs.writeFile(path.join(baselineDir,baselineName),buffers[0]);
     await context.close();
    }
    const decoded=await Promise.all(buffers.map(b=>sharp(b).ensureAlpha().raw().toBuffer({resolveWithObject:true})));

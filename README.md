@@ -2,9 +2,9 @@
 
 EmDash 1.3.0 powers the existing Astro frontend. The migration preserves the Graham-approved staging design, URLs, content, assets and interactions from `main` commit `b18805f`.
 
-- EmDash preview: https://redbarn-emdash-preview.91.98.31.168.sslip.io/
-- Original staging reference: https://redbarn-preview.91.98.31.168.sslip.io/
-- Branch: `feat/emdash-migration`
+- Staging: https://redbarn-preview.91.98.31.168.sslip.io/
+- Previous EmDash preview redirects to staging.
+- Deployment branch: `main`
 - Repository: https://github.com/performance-clickt/red-barn-site
 
 ## Run
@@ -71,7 +71,7 @@ The self-hosted `/financial-reflection` quiz provides on-screen results and loca
 
 ## Deployment and persistence
 
-Coolify: https://coolify.pyrito.com, project **Red Barn**, application **Red Barn EmDash Preview** (`ghucaajw5nmvzze4uv3rd4hh`). Dockerfile build pack, branch `feat/emdash-migration`, container port 80, host port 18092. Use the container-command health check `node /app/server/healthcheck.mjs` (30-second interval, 5-second timeout, 3 retries, 90-second start period). Deploy manually after pushing the branch. Main and the original staging deployment remain separate.
+Coolify: https://coolify.pyrito.com, project **Red Barn**, application **Red Barn Staging EmDash** (`ghucaajw5nmvzze4uv3rd4hh`). Dockerfile build pack, branch `main`, container port 80, host port 18092. Use the container-command health check `node /app/server/healthcheck.mjs` (30-second interval, 5-second timeout, 3 retries, 90-second start period). Deploy manually after pushing main. The former static staging application is retained as **Red Barn Static Rollback**, pinned to `b18805fae9def3e76975a60f9f636f9636245777` on port 18091.
 
 Required directory mount:
 
@@ -80,7 +80,7 @@ Required directory mount:
 
 Run one application instance. This directory holds `emdash.db` (SQLite), uploaded media, sessions and `encryption.key`. The startup script generates the encryption key once with mode 0600. Preserve the key alongside the database on every backup/restore. The volume must be writable by UID 1000. Never copy a disposable development database or dev-bypass user to deployment.
 
-Set `EMDASH_SITE_URL=https://redbarn-emdash-preview.91.98.31.168.sslip.io` for **both build and runtime**. It must match the public HTTPS origin used for passkeys. The internal server listens on 127.0.0.1:4321 behind Nginx; only Nginx port 80 is exposed. Caddy provides HTTPS and forwards the preview host to port 18092.
+Set `EMDASH_SITE_URL=https://redbarn-preview.91.98.31.168.sslip.io` for **both build and runtime**. It must match the public HTTPS origin used for passkeys. The internal server listens on 127.0.0.1:4321 behind Nginx; only Nginx port 80 is exposed. Caddy provides HTTPS and forwards the existing staging host to port 18092. The previous EmDash preview host redirects to staging so editor passkeys use one origin.
 
 The entire editor and API are protected by an additional HTTP Basic gate using `/app/data/admin.htpasswd`; public media files remain readable. The access credentials are handed over privately. Complete first-user setup with your own email and passkey after passing this gate. Production builds disable EmDash's development bypass. The public site remains `noindex, nofollow` and has a disallow-all robots file.
 
@@ -88,15 +88,16 @@ The enquiry relay accepts runtime environment variables or the private optional 
 
 ### Backup, deployment and rollback
 
-Before updates after editing has begun, stop this preview application and back up the complete host data directory, then deploy one instance. Stopping avoids concurrent writers during migration and gives a consistent SQLite backup. Keep backups outside the application volume, with restricted permissions. Restore a backup and its matching application revision together if a schema migration needs rollback. Never overwrite the CMS volume with the source seed to roll back content.
+Before updates after editing has begun, stop this staging application and back up the complete host data directory, then deploy one instance. Stopping avoids concurrent writers during migration and gives a consistent SQLite backup. Keep backups outside the application volume, with restricted permissions. Restore a backup and its matching application revision together if a schema migration needs rollback. Never overwrite the CMS volume with the source seed to roll back content.
 
-A fresh deployment imports the seed only once. Restarts and redeployments preserve CMS edits and media. The original static staging app on port 18091 remains the visual reference and fallback. Redirects, PDF canonical headers and the external quiz/video providers are retained.
+A fresh deployment imports the seed only once. Restarts and redeployments preserve CMS edits and media. The original static staging app on port 18091 remains the fallback. To roll back public staging, restore its Caddy upstream to `172.18.0.1:18091` and validate/reload Caddy. This does not overwrite EmDash content. A pre-cutover database/media/key backup is retained at `/opt/redbarn-emdash/backups/pre-main-20261016T183251Z`. Redirects, PDF canonical headers and the external quiz/video providers are retained.
 
 ## Verification
 
 - `npm run test:cms`: all 32 rich-text bodies match the original HTML structure, plus unsafe HTML rejection and native editor table rendering.
 - `node scripts/emdash/test-publishing.mjs`: runs **only** against a disposable local development database on port 4323; verifies draft isolation, publish visibility, unauthorized-write rejection and media upload bytes. Do not use a deployment database.
 - `node scripts/emdash/compare-staging.mjs`: 34 public routes at desktop 1440 px and mobile 390 px against staging; fails on any screenshot pixel difference.
+- For a cutover on the same URL, first set `QA_CAPTURE_BASELINE=1 QA_BASELINE_DIR=/absolute/path/to/baseline` when running the visual comparison script; then compare the deployed candidate with `QA_BASELINE_DIR` set and `QA_CAPTURE_BASELINE` unset. Saved baselines preserve the before-deployment reference.
 - `npm run audit:content`: rendered content, internal links and images against the running SSR server.
 
 The migration source was originally downloaded from the existing Squarespace site on 2026-09-16. Original legal and investment claims are retained; no new investment-performance claims were introduced. The live production domain has not been moved.
