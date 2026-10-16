@@ -9,3 +9,9 @@ migration/source/
 
 # Generated responsive assets
 public/optimized/
+
+# Persistent CMS data and local verification
+data/
+.emdash/
+playwright-report/
+test-results/

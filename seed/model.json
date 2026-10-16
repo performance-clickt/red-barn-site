@@ -1,0 +1,430 @@
+{
+  "version": "1",
+  "defaultLocale": "en",
+  "meta": {
+    "name": "Red Barn migration from b18805f"
+  },
+  "settings": {
+    "title": "Red Barn Investment Counsel",
+    "timezone": "America/Edmonton"
+  },
+  "collections": [
+    {
+      "slug": "pages",
+      "label": "Website pages",
+      "titleField": "title",
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview",
+        "scheduling",
+        "search"
+      ],
+      "routable": true,
+      "urlPattern": "/{slug}",
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "seo_title",
+          "label": "Seo Title",
+          "type": "string"
+        },
+        {
+          "slug": "h1",
+          "label": "H1",
+          "type": "string"
+        },
+        {
+          "slug": "description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "slug": "hero_image",
+          "label": "Hero Image",
+          "type": "image"
+        },
+        {
+          "slug": "hero_alt",
+          "label": "Hero Alt",
+          "type": "string"
+        },
+        {
+          "slug": "source_url",
+          "label": "Source Url",
+          "type": "url"
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText"
+        }
+      ]
+    },
+    {
+      "slug": "posts",
+      "label": "Insights",
+      "titleField": "title",
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview",
+        "scheduling",
+        "search"
+      ],
+      "routable": true,
+      "urlPattern": "/insights/{slug}",
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "seo_title",
+          "label": "Seo Title",
+          "type": "string"
+        },
+        {
+          "slug": "h1",
+          "label": "H1",
+          "type": "string"
+        },
+        {
+          "slug": "description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "slug": "hero_image",
+          "label": "Hero Image",
+          "type": "image"
+        },
+        {
+          "slug": "hero_alt",
+          "label": "Hero Alt",
+          "type": "string"
+        },
+        {
+          "slug": "source_url",
+          "label": "Source Url",
+          "type": "url"
+        },
+        {
+          "slug": "content",
+          "label": "Content",
+          "type": "portableText"
+        },
+        {
+          "slug": "date",
+          "label": "Date",
+          "type": "string"
+        },
+        {
+          "slug": "author",
+          "label": "Author",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "slug": "homepage",
+      "label": "Homepage",
+      "titleField": "title",
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview",
+        "scheduling",
+        "search"
+      ],
+      "routable": true,
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "headline",
+          "label": "Headline",
+          "type": "string"
+        },
+        {
+          "slug": "tagline",
+          "label": "Tagline",
+          "type": "string"
+        },
+        {
+          "slug": "intro",
+          "label": "Intro",
+          "type": "text"
+        },
+        {
+          "slug": "gallery",
+          "label": "Gallery",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "image",
+                "label": "Image",
+                "type": "image"
+              },
+              {
+                "slug": "alt",
+                "label": "Alt",
+                "type": "string"
+              }
+            ],
+            "minItems": 5,
+            "maxItems": 5
+          }
+        },
+        {
+          "slug": "differences",
+          "label": "Differences",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "title",
+                "label": "Title",
+                "type": "string"
+              },
+              {
+                "slug": "body",
+                "label": "Body",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        {
+          "slug": "family_title",
+          "label": "Family Title",
+          "type": "string"
+        },
+        {
+          "slug": "family_body",
+          "label": "Family Body",
+          "type": "text"
+        },
+        {
+          "slug": "family_takeaways",
+          "label": "Family Takeaways",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "text",
+                "label": "Text",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        {
+          "slug": "investing_title",
+          "label": "Investing Title",
+          "type": "string"
+        },
+        {
+          "slug": "investing_body",
+          "label": "Investing Body",
+          "type": "text"
+        },
+        {
+          "slug": "pillars",
+          "label": "Pillars",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "text",
+                "label": "Text",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        {
+          "slug": "steps",
+          "label": "Steps",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "title",
+                "label": "Title",
+                "type": "string"
+              },
+              {
+                "slug": "body",
+                "label": "Body",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        {
+          "slug": "quiz_title",
+          "label": "Quiz Title",
+          "type": "string"
+        },
+        {
+          "slug": "quiz_body",
+          "label": "Quiz Body",
+          "type": "string"
+        },
+        {
+          "slug": "quiz_benefits",
+          "label": "Quiz Benefits",
+          "type": "repeater",
+          "validation": {
+            "subFields": [
+              {
+                "slug": "text",
+                "label": "Text",
+                "type": "text"
+              }
+            ]
+          }
+        },
+        {
+          "slug": "advisor_body",
+          "label": "Advisor Body",
+          "type": "text"
+        },
+        {
+          "slug": "seo_title",
+          "label": "Seo Title",
+          "type": "string"
+        },
+        {
+          "slug": "seo_description",
+          "label": "Seo Description",
+          "type": "text"
+        },
+        {
+          "slug": "seo_context",
+          "label": "Seo Context",
+          "type": "string"
+        }
+      ],
+      "urlPattern": "/"
+    },
+    {
+      "slug": "settings",
+      "label": "Contact & site settings",
+      "titleField": "title",
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview",
+        "scheduling",
+        "search"
+      ],
+      "routable": true,
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "email",
+          "label": "Email",
+          "type": "string"
+        },
+        {
+          "slug": "phone",
+          "label": "Phone",
+          "type": "string"
+        },
+        {
+          "slug": "address",
+          "label": "Address",
+          "type": "string"
+        },
+        {
+          "slug": "disclosure",
+          "label": "Disclosure",
+          "type": "text"
+        },
+        {
+          "slug": "risk_disclosure",
+          "label": "Risk Disclosure",
+          "type": "text"
+        },
+        {
+          "slug": "subscription_consent",
+          "label": "Subscription Consent",
+          "type": "text"
+        },
+        {
+          "slug": "quiz_url",
+          "label": "Quiz Url",
+          "type": "url"
+        },
+        {
+          "slug": "roadmap_url",
+          "label": "Roadmap Url",
+          "type": "url"
+        },
+        {
+          "slug": "conflicts_url",
+          "label": "Conflicts Url",
+          "type": "url"
+        }
+      ],
+      "urlPattern": "/"
+    },
+    {
+      "slug": "insights_settings",
+      "label": "Insights listing",
+      "titleField": "title",
+      "supports": [
+        "drafts",
+        "revisions",
+        "preview",
+        "scheduling",
+        "search"
+      ],
+      "routable": true,
+      "fields": [
+        {
+          "slug": "title",
+          "label": "Title",
+          "type": "string",
+          "required": true
+        },
+        {
+          "slug": "seo_title",
+          "label": "Seo Title",
+          "type": "string"
+        },
+        {
+          "slug": "description",
+          "label": "Description",
+          "type": "text"
+        },
+        {
+          "slug": "h1",
+          "label": "H1",
+          "type": "string"
+        }
+      ],
+      "urlPattern": "/insights"
+    }
+  ],
+  "content": {}
+}

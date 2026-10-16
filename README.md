@@ -1,37 +1,48 @@
-# Red Barn — Astro + Keystatic
+# Red Barn — Astro + EmDash
 
-A new visual design using Red Barn’s existing content, photography, logo, colors and fonts. Deployed as a public review site through Coolify; the live Squarespace website has not been changed.
+EmDash 1.3.0 powers the existing Astro frontend. The migration preserves the Graham-approved staging design, URLs, content, assets and interactions from `main` commit `b18805f`.
 
-- Preview: https://redbarn.178.104.248.103.sslip.io/
+- Staging: https://redbarn-preview.91.98.31.168.sslip.io/
+- Previous EmDash preview redirects to staging.
+- Deployment branch: `main`
 - Repository: https://github.com/performance-clickt/red-barn-site
 
 ## Run
 
-Node 22.12+ is required. Dependencies are pinned in package.json and package-lock.json.
+Use Node 22.12 or newer.
 
 ```sh
 npm ci
+npm run cms:import
 npm run dev
 ```
 
-- Website: http://127.0.0.1:4321
-- Content editor: http://127.0.0.1:4321/keystatic
-- Build: `npm run build`
-- Preview the static build: `npm run preview`
-- Verify migrated content and internal links after a build: `npm run audit:content`
+Website: http://127.0.0.1:4321. Editor: http://127.0.0.1:4321/_emdash/admin.
 
-## Editing
+The importer initializes an empty database, imports 35 published records and the media library, then marks the import complete. Subsequent runs preserve editor changes. It refuses a database with unrelated existing collections. `src/content/` and `migration/keystatic.config.ts` are retained migration inputs; public pages read only published EmDash content.
 
-Keystatic uses local, file-backed storage. There is no paid CMS service or account dependency. The editor writes directly to this project:
+```sh
+npm run build
+PORT=4322 node server/start-cms.mjs
+AUDIT_BASE_URL=http://127.0.0.1:4322 npm run audit:content
+npm run test:cms
+npm run test:reflection
+node --test server/enquiries.test.mjs
+```
 
-- **Homepage:** hero headline, five gallery photos, introductory text, differences, family meeting content, investment approach, onboarding, quiz and advisor copy.
-- **Website pages:** 21 pages, including services, seasons, team bios and policies, with Markdoc rich text and local images.
-- **Insights:** all 12 published articles, including original publication dates, charts, links, disclosures and downloads.
-- **Contact & site settings:** contact details, legal disclosures and quiz URLs.
+## Editing and publishing
 
-The homepage, /home alias and insights index complete the 36 imported URLs (root plus the 35 URLs in the original sitemap). New collection entries receive routes automatically at build time. Keep existing slugs stable unless you also add a redirect. The original source URL is reference metadata, not rendered page copy.
+The hosted editor has five collections:
 
-Save in Keystatic, refresh the local page, then rebuild to publish changes. Local mode is intended for a trusted local computer. The editor is deliberately excluded from production builds. A hosted editor would need a separate GitHub-backed/authenticated setup; none has been enabled.
+- Homepage: hero, gallery, section copy, benefits and onboarding steps; edit the `main` entry.
+- Website pages: 20 existing pages, SEO fields, hero image and rich text.
+- Insights: 12 articles, dates, authors, SEO fields and rich text.
+- Contact & site settings: shared contact details, disclosures and quiz links; edit `main`.
+- Insights index settings: listing title and introduction; edit `main`.
+
+Save a draft to keep edits private; Publish makes them visible immediately without a rebuild. Preserve existing slugs, and add explicit redirects before changing them. Imported complex layouts such as team biographies use editable HTML blocks within rich text to retain their exact structure. HTML blocks are sanitized before rendering. Existing hero and rich-text images are registered in EmDash's media library; new uploads live in persistent storage.
+
+The frontend templates, styles and React islands are unchanged. `src/lib/content.ts` maps EmDash fields to the existing template interface. `src/lib/cms-rich-text.mjs` preserves the original rich-text HTML. Responsive image markup is applied to server-rendered responses. The exact staging optimized image bytes are retained in `seed/optimized-baseline.tar.gz` (SHA-256 verified at build time), because fresh image encoding varies by platform. Newly changed image sources receive new derived filenames.
 
 ## Hero
 
@@ -52,26 +63,41 @@ Configure these **runtime-only** variables in Coolify before deployment:
 
 Capture payload fields: First Name, Last Name, Email and Description. Keep mailing-list subscription and double opt-in off for these enquiries. The subject and message are saved together in Description. No API administrator account is needed.
 
-The relay validates fields and origin, limits payload size, includes a honeypot, and limits requests to 120 per minute overall and three per email address. Duplicate submissions with the same key are coalesced for ten minutes within a running process. These in-memory controls reset on restart; they are not a durable delivery queue. Failed submissions retain the visitor's form details. Run `node --test server/enquiries.test.mjs` to verify mapping, duplicate suppression, validation and failure handling. Keystatic stores website content, not enquiries.
+The relay validates fields and origin, limits payload size, includes a honeypot, and limits requests to 120 per minute overall and three per email address. Duplicate submissions with the same key are coalesced for ten minutes within a running process. These in-memory controls reset on restart; they are not a durable delivery queue. Failed submissions retain the visitor's form details. Run `node --test server/enquiries.test.mjs` to verify mapping, duplicate suppression, validation and failure handling. EmDash stores website content, not enquiries.
 
 ## External content
 
 The self-hosted `/financial-reflection` quiz provides on-screen results and local PDF export. Email and CRM storage are deferred; see `docs/financial-reflection.md` for evidence, validation and future configuration. `/financial-quiz` remains a separate externally hosted Financial Freedom Roadmap app; its hosting and submission behavior remain with its existing provider. The existing Squarespace HLS philosophy video remains externally hosted and plays through native HLS or a lazily loaded HLS player. Move these services/media before retiring the old account if required. External editorial links and webinar registrations are retained.
 
-## Source & migration
+## Deployment and persistence
 
-Content was downloaded from https://www.redbarninvestmentcounsel.ca/ on 2026-09-16. Source manifests and the migration audit live under `migration/`. Original Squarespace layout, CSS and scripts do not ship in the rebuilt pages. Empty decorative spacer images were discarded. A pre-existing `/horizons` link in About now points to `/seasons`.
+Coolify: https://coolify.pyrito.com, project **Red Barn**, application **Red Barn Staging EmDash** (`ghucaajw5nmvzze4uv3rd4hh`). Dockerfile build pack, branch `main`, container port 80, host port 18092. Use the container-command health check `node /app/server/healthcheck.mjs` (30-second interval, 5-second timeout, 3 retries, 90-second start period). Deploy manually after pushing main. The former static staging application is retained as **Red Barn Static Rollback**, pinned to `b18805fae9def3e76975a60f9f636f9636245777` on port 18091.
 
-The design retains the live site’s Work Sans, Droid Sans and Space Grotesk, with `#B01F29` red, `#342E2E` charcoal, `#FAFAFA` white and `#E8E8E8` gray. Fonts and editorial images are served locally. CMS-managed images are isolated under `public/images/homepage`, `public/images/pages/<slug>` and `public/images/posts/<slug>` so edits cannot remove another page’s photographs. Existing co-branded Red Barn / Vesta artwork is preserved.
+Required directory mount:
 
-`fetch-source.py`, `migrate-content.mjs`, `fetch-assets.py`, `optimize-assets.mjs` and `namespace-content-assets.mjs` document the one-time import. Do not rerun migration over edited CMS content: it overwrites imported entries. The retained content inventory supports comparison without recrawling the live site.
+- Host: `/opt/redbarn-emdash/data`
+- Container: `/app/data`
 
-## Deployment
+Run one application instance. This directory holds `emdash.db` (SQLite), uploaded media, sessions and `encryption.key`. The startup script generates the encryption key once with mode 0600. Preserve the key alongside the database on every backup/restore. The volume must be writable by UID 1000. Never copy a disposable development database or dev-bypass user to deployment.
 
-`npm run build` produces `dist/` for any static host. The included Dockerfile builds and audits the site, then serves the static output with Nginx and runs the enquiry relay under Supervisor. In Coolify, use the Dockerfile build pack, branch `main`, and container port `80`. The Docker health check verifies Nginx and relay configuration. The runtime variables documented above are required; the website needs no database or persistent volume.
+Set `EMDASH_SITE_URL=https://redbarn-preview.91.98.31.168.sslip.io` for **both build and runtime**. It must match the public HTTPS origin used for passkeys. The internal server listens on 127.0.0.1:4321 behind Nginx; only Nginx port 80 is exposed. Caddy provides HTTPS and forwards the existing staging host to port 18092. The previous EmDash preview host redirects to staging so editor passkeys use one origin.
 
-The Coolify application is in the **Red Barn** project on `dev.pyrito.com`, connected to this public repository. To publish an update, commit and push to `main`, then choose **Actions → Deploy** in Coolify. Automatic push webhooks are not configured. Keystatic stays available through local development; the public deployment serves the saved content only.
+The entire editor and API are protected by an additional HTTP Basic gate using `/app/data/admin.htpasswd`; public media files remain readable. The access credentials are handed over privately. Complete first-user setup with your own email and passkey after passing this gate. Production builds disable EmDash's development bypass. The public site remains `noindex, nofollow` and has a disallow-all robots file.
 
-The container is configured as a public review deployment: it sends `X-Robots-Tag: noindex, nofollow` and a disallow-all robots file. Remove those review-only rules from `deploy/nginx.conf` when intentionally launching the replacement production site. The existing live domain remains unchanged. Production omits `/keystatic` and `/api/keystatic`; existing public routes, canonical URLs, metadata, sitemap and robots file are included. The /home alias canonicalizes to the root.
+The enquiry relay accepts runtime environment variables or the private optional file `/app/data/enquiries.env`. The original staging container had **no lead-capture configuration** at migration time; supply `ESPO_LEAD_CAPTURE_URL` and `FORM_ALLOWED_ORIGINS` before considering enquiry delivery enabled. The site health endpoint checks CMS content availability; relay readiness can be checked separately inside the container at `http://127.0.0.1:3001/healthz`. No real enquiries are sent by migration tests.
 
-The original legal and investment claims have been migrated, not independently re-approved. No new investment-performance claims were introduced.
+### Backup, deployment and rollback
+
+Before updates after editing has begun, stop this staging application and back up the complete host data directory, then deploy one instance. Stopping avoids concurrent writers during migration and gives a consistent SQLite backup. Keep backups outside the application volume, with restricted permissions. Restore a backup and its matching application revision together if a schema migration needs rollback. Never overwrite the CMS volume with the source seed to roll back content.
+
+A fresh deployment imports the seed only once. Restarts and redeployments preserve CMS edits and media. The original static staging app on port 18091 remains the fallback. To roll back public staging, restore its Caddy upstream to `172.18.0.1:18091` and validate/reload Caddy. This does not overwrite EmDash content. A pre-cutover database/media/key backup is retained at `/opt/redbarn-emdash/backups/pre-main-20261016T183251Z`. Redirects, PDF canonical headers and the external quiz/video providers are retained.
+
+## Verification
+
+- `npm run test:cms`: all 32 rich-text bodies match the original HTML structure, plus unsafe HTML rejection and native editor table rendering.
+- `node scripts/emdash/test-publishing.mjs`: runs **only** against a disposable local development database on port 4323; verifies draft isolation, publish visibility, unauthorized-write rejection and media upload bytes. Do not use a deployment database.
+- `node scripts/emdash/compare-staging.mjs`: 34 public routes at desktop 1440 px and mobile 390 px against staging; fails on any screenshot pixel difference.
+- For a cutover on the same URL, first set `QA_CAPTURE_BASELINE=1 QA_BASELINE_DIR=/absolute/path/to/baseline` when running the visual comparison script; then compare the deployed candidate with `QA_BASELINE_DIR` set and `QA_CAPTURE_BASELINE` unset. Saved baselines preserve the before-deployment reference.
+- `npm run audit:content`: rendered content, internal links and images against the running SSR server.
+
+The migration source was originally downloaded from the existing Squarespace site on 2026-09-16. Original legal and investment claims are retained; no new investment-performance claims were introduced. The live production domain has not been moved.
