@@ -12,7 +12,9 @@
     "test:reflection": "node --experimental-strip-types --test tests/reflection/*.test.mjs",
     "cms:import": "node scripts/emdash/import-content.mjs",
     "cms:seed": "node scripts/emdash/generate-seed.mjs",
-    "test:cms": "node --test tests/emdash/*.test.mjs"
+    "test:cms": "node --test tests/emdash/*.test.mjs",
+    "audit:schema": "node scripts/audit-schema.mjs",
+    "test:schema": "node --experimental-strip-types --test tests/seo/*.test.mjs"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
