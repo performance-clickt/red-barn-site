@@ -23,5 +23,5 @@ COPY deploy/supervisord.conf /etc/supervisord.conf
 COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
 RUN rm -f /etc/nginx/sites-enabled/default && mkdir -p /app/data && chown -R node:node /app/data
 EXPOSE 80
-HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 CMD node -e "fetch('http://127.0.0.1/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=90s --retries=3 CMD ["node", "/app/server/healthcheck.mjs"]
 CMD ["supervisord", "-c", "/etc/supervisord.conf"]

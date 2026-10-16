@@ -71,7 +71,7 @@ The self-hosted `/financial-reflection` quiz provides on-screen results and loca
 
 ## Deployment and persistence
 
-Coolify: https://coolify.pyrito.com, project **Red Barn**, application **Red Barn EmDash Preview** (`ghucaajw5nmvzze4uv3rd4hh`). Dockerfile build pack, branch `feat/emdash-migration`, container port 80, host port 18092. Deploy manually after pushing the branch. Main and the original staging deployment remain separate.
+Coolify: https://coolify.pyrito.com, project **Red Barn**, application **Red Barn EmDash Preview** (`ghucaajw5nmvzze4uv3rd4hh`). Dockerfile build pack, branch `feat/emdash-migration`, container port 80, host port 18092. Use the container-command health check `node /app/server/healthcheck.mjs` (30-second interval, 5-second timeout, 3 retries, 90-second start period). Deploy manually after pushing the branch. Main and the original staging deployment remain separate.
 
 Required directory mount:
 
@@ -94,7 +94,7 @@ A fresh deployment imports the seed only once. Restarts and redeployments preser
 
 ## Verification
 
-- `npm run test:cms`: all 32 rich-text bodies match the original HTML structure, plus unsafe HTML rejection.
+- `npm run test:cms`: all 32 rich-text bodies match the original HTML structure, plus unsafe HTML rejection and native editor table rendering.
 - `node scripts/emdash/test-publishing.mjs`: runs **only** against a disposable local development database on port 4323; verifies draft isolation, publish visibility, unauthorized-write rejection and media upload bytes. Do not use a deployment database.
 - `node scripts/emdash/compare-staging.mjs`: 34 public routes at desktop 1440 px and mobile 390 px against staging; fails on any screenshot pixel difference.
 - `npm run audit:content`: rendered content, internal links and images against the running SSR server.

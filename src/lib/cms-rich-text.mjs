@@ -31,6 +31,14 @@ function nodeHtml(node, tight = false) {
     case 'horizontalRule': return '<hr>';
     case 'image': return `<p>${render(tag('img', {src:node.attrs?.src || '',alt:node.attrs?.alt || '', ...(node.attrs?.title ? {title:node.attrs.title}:{})}))}</p>`;
     case 'codeBlock': return `<pre><code>${children()}</code></pre>`;
+    case 'table': return `<table><tbody>${children()}</tbody></table>`;
+    case 'tableRow': return `<tr>${children()}</tr>`;
+    case 'tableCell':
+    case 'tableHeader': {
+      const name=node.type==='tableHeader'?'th':'td';
+      const span=key=>Number.isSafeInteger(node.attrs?.[key]) && node.attrs[key]>1 ? ` ${key}="${node.attrs[key]}"` : '';
+      return `<${name}${span('colspan')}${span('rowspan')}>${children()}</${name}>`;
+    }
     case 'htmlBlock': return safeHtml(node.attrs?.html || '');
     default: throw new Error(`Unsupported EmDash content node: ${node.type}`);
   }
