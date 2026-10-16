@@ -71,7 +71,7 @@ The self-hosted `/financial-reflection` quiz provides on-screen results and loca
 
 ## Deployment and persistence
 
-Coolify: https://coolify.pyrito.com, project **Red Barn**, application **Red Barn Staging EmDash** (`ghucaajw5nmvzze4uv3rd4hh`). Dockerfile build pack, branch `main`, container port 80, host port 18092. Use the container-command health check `node /app/server/healthcheck.mjs` (30-second interval, 5-second timeout, 3 retries, 90-second start period). Deploy manually after pushing main. The former static staging application is retained as **Red Barn Static Rollback**, pinned to `b18805fae9def3e76975a60f9f636f9636245777` on port 18091.
+Coolify: https://coolify.pyrito.com, project **Red Barn**, application **Red Barn EmDash Preview** (now serving staging) (`ghucaajw5nmvzze4uv3rd4hh`). Dockerfile build pack, branch `main`, container port 80, host port 18092. Use the container-command health check `node /app/server/healthcheck.mjs` (30-second interval, 5-second timeout, 3 retries, 90-second start period). Deploy manually after pushing main. The former static staging application is retained as **Red Barn Website** as the static rollback, pinned to `b18805fae9def3e76975a60f9f636f9636245777` on port 18091.
 
 Required directory mount:
 
