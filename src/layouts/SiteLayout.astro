@@ -3,15 +3,13 @@ import '../styles/global.css';
 import '../styles/responsive.css';
 import '../styles/graham-review.css';
 import { reader } from '../lib/content';
-import { canonicalUrl, serializeJsonLd, breadcrumbSchema, type Breadcrumb } from '../lib/seo';
-interface Props { title?: string; description?: string; image?: string | null; home?: boolean; article?: { headline: string; date?: string | null; author?: string | null }; breadcrumbs?: Breadcrumb[]; }
-const { title = 'Red Barn Investment Counsel', description = 'Risk-managed, tax-aware portfolios and family-first planning. Investing for generations.', image, home = false, article, breadcrumbs } = Astro.props;
+import { canonicalUrl, serializeJsonLd, siteSchema, type Breadcrumb, type ArticleMetadata } from '../lib/seo';
+interface Props { title?: string; description?: string; image?: string | null; home?: boolean; article?: ArticleMetadata; breadcrumbs?: Breadcrumb[]; schema?: boolean; }
+const { title = 'Red Barn Investment Counsel', description = 'Risk-managed, tax-aware portfolios and family-first planning. Investing for generations.', image, home = false, article, breadcrumbs, schema = true } = Astro.props;
 const settings = await reader.singletons.settings.readOrThrow();
 const canonical = canonicalUrl(home ? "/" : Astro.url.pathname);
-const organization = { '@context': 'https://schema.org', '@type': 'Organization', '@id': canonicalUrl('/') + '#organization', name: 'Red Barn Investment Counsel', url: canonicalUrl('/'), telephone: settings.phone, email: settings.email, address: settings.address, parentOrganization: { '@type': 'Organization', name: 'Vesta Wealth Partners' } };
-const schemas: unknown[] = [organization];
-if (breadcrumbs) schemas.push(breadcrumbSchema(breadcrumbs));
-if (article) schemas.push({ '@context': 'https://schema.org', '@type': 'BlogPosting', headline: article.headline, description, url: canonical, mainEntityOfPage: canonical, ...(article.date ? { datePublished: article.date } : {}), ...(article.author ? { author: { '@type': 'Person', name: article.author } } : {}), publisher: { '@id': canonicalUrl('/') + '#organization' }, ...(image ? { image: new URL(image, canonicalUrl('/')).href } : {}) });
+const structuredData = siteSchema({ path: home ? '/' : Astro.url.pathname, title, description, settings, image, article, breadcrumbs,
+  assetOrigin: import.meta.env.EMDASH_SITE_URL || Astro.site!.href });
 const navigation = [
   { label: 'Home', href: '/' },
   { label: 'Seasons', href: '/seasons', links: [['Sowing', '/sowing'], ['Growing', '/growing'], ['Harvest', '/harvest'], ['Legacy', '/legacy']] },
@@ -28,7 +26,7 @@ const navigation = [
     <meta name="theme-color" content="#B01F29" />
     <meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:type" content={article ? 'article' : 'website'} /><meta property="og:url" content={canonical} />
     {image && <meta property="og:image" content={new URL(image, Astro.site)} />}
-    {schemas.map(schema => <script is:inline type="application/ld+json" set:html={serializeJsonLd(schema)} />)}
+    {schema && <script is:inline type="application/ld+json" set:html={serializeJsonLd(structuredData)} />}
     <link rel="icon" href="/images/b27dc70ad2-RedBarn-Logo.webp" type="image/webp" />
     <script is:inline>document.documentElement.classList.add('js');</script>
   </head>

@@ -6,7 +6,7 @@ ENV EMDASH_SITE_URL=$EMDASH_SITE_URL
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
-RUN npm run build && npm run test:cms
+RUN npm run build && npm run test:cms && npm run test:schema
 
 FROM node:22-bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends nginx supervisor ca-certificates && rm -rf /var/lib/apt/lists/*
