@@ -26,6 +26,10 @@ for(const p of inventory){
    if(!text.includes(normalize('Discover the values that guide your financial decisions.')))errors.push({route,error:'Reflection introduction missing'});
    continue;
   }
+  if(p.slug==='index' && block.startsWith('Watch our philosophy')) {
+   if(!text.includes(normalize('Watch our philosophy. See how our investment principles guide decisions for your family.')))errors.push({route,error:'Philosophy introduction missing'});
+   continue;
+  }
   let compared = ['index','home'].includes(p.slug) ? block.replace(/^Book an intro call/, '') : block;
   if(['index','home','growing','harvest'].includes(p.slug)) {
    compared=compared.replace('Personalized “values profile” emailed to you (with conversation prompts)', 'Personalized “values profile” to download (with conversation prompts)');

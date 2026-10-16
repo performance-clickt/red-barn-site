@@ -30,13 +30,31 @@ if(overview){
 }
 focus=focus.replace(/h4>/g,'h2>');audience=audience.replace(/h4>/g,'h2>');
 const seasons=[['Sowing','sowing'],['Growing','growing'],['Harvest','harvest'],['Legacy','legacy']];
+const escapeHtml=(value:string)=>value.replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]!));
+let riskNotice='';
+const cardMarkup=(html:string)=>{
+ const card=load(html,null,false);
+ const image=card('img').first();
+ const headings=card('h3,h4');
+ const title=headings.first().text().trim();
+ const link=card('a').first();
+ const href=link.attr('href')||'#';
+ const paragraphs=card('p').toArray().map(el=>card(el));
+ const disclosure=paragraphs.find(p=>p.text().includes('Private and alternative investments may be illiquid'));
+ if(disclosure){riskNotice=disclosure.text().trim();disclosure.remove();}
+ const subtitle=headings.eq(1).text().trim()||paragraphs.find(p=>!p.find('a,img').length&&!p.text().includes('•')&&!p.text().includes('Private and alternative')&&p.prevAll('a,p:has(a)').length)?.text().trim()||'';
+ const summary=paragraphs.find(p=>!p.find('a,img').length&&!p.text().includes('•')&&!p.text().includes('Private and alternative')&&p.text().trim()!==subtitle)?.text().trim()||'';
+ const terms=paragraphs.find(p=>p.text().includes('•'))?.text().replace(/^\s*•\s*/,'').split('•').map(term=>term.trim()).filter(Boolean)||[];
+ return `<div class="season-card-image">${image.length?card.html(image):''}</div><div class="season-card-heading"><div><h3>${escapeHtml(title)}</h3>${subtitle?`<p class="season-card-subtitle">${escapeHtml(subtitle)}</p>`:''}</div><a href="${escapeHtml(href)}">${escapeHtml(link.text().trim()||`Explore ${title}`)} <span aria-hidden="true">↗</span></a></div>${summary?`<p class="season-card-summary">${escapeHtml(summary)}</p>`:''}${terms.length?`<ul class="season-card-points">${terms.map(term=>`<li>${escapeHtml(term)}</li>`).join('')}</ul>`:''}`;
+};
+const renderedCards=cards.map(cardMarkup);
 ---
 <div class:list={['season-editorial',{ 'season-overview':overview }]}>
  <section class="season-introduction"><div set:html={intro}/>{image&&<img src={image} alt={alt||''} width="1000" height="750" fetchpriority="high"/>}</section>
- {overview ? <section class="season-directory"><h2>{sectionTitle}</h2><div class="season-editorial-cards">{cards.map(card=><article set:html={card.replace(/h4>/g, 'h3>')}/>)}</div></section> : <>
+ {overview ? <section class="season-directory"><h2>{sectionTitle}</h2><div class="season-editorial-cards">{renderedCards.map(card=><article set:html={card}/>)}</div>{riskNotice&&<p class="season-risk-note">{riskNotice}</p>}</section> : <>
  <section class="season-priorities"><div class="season-focus" set:html={focus}/><div class="season-audience" set:html={audience}/></section>
  <section class="season-actions" set:html={actions}/>
- {cards.length>0&&<section class="season-related"><h2>Explore another season.</h2><div class="season-editorial-cards">{cards.map(card=><article set:html={card.replace(/h4>/g, 'h3>')}/>)}</div></section>}
+ {renderedCards.length>0&&<section class="season-related"><h2>Explore another season.</h2><div class="season-editorial-cards">{renderedCards.map(card=><article set:html={card}/>)}</div></section>}
  {quiz&&<section class="season-values" set:html={quiz}/>}
  <nav class="season-navigation" aria-label="All seasons"><a href="/seasons">All seasons</a>{seasons.map(([name,path])=><a href={`/${path}`} aria-current={slug===path?'page':undefined}>{name} <span aria-hidden="true">↗</span></a>)}</nav>
  </>}

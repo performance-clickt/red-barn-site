@@ -42,7 +42,7 @@ const services=[['Our Approach','our-approach'],['Discretionary Management','dis
 ---
 <div class:list={['approach-editorial',{'approach-overview':overview}]}>
  <section class="approach-intro"><div set:html={intro}/>{image&&<img src={image} alt={alt||''} width="1000" height="750" fetchpriority="high"/>}</section>
- <div class="approach-sections">{cards.map((card,i)=><section class:list={['approach-section',{'has-photo':!!card.photo,'is-wide':card.wide}]}>
+ <div class="approach-sections">{cards.map((card,i)=><section class:list={['approach-section',{'has-photo':!!card.photo,'is-wide':card.wide,'is-onboarding':overview && /30-Day Onboarding/i.test(card.title)}]}>
   {card.photo&&<div class="approach-photo" set:html={card.photo}/>}
   <div class="approach-section-copy"><span class="approach-number" aria-hidden="true" data-number={String(i+1).padStart(2,'0')}/>{card.title&&<h2 set:html={card.title}/>}<div set:html={card.body}/></div>
  </section>)}</div>

@@ -45,7 +45,7 @@ export default function HeroGallery({ headline, tagline, gallery, email }: Props
         <span className="hero-kicker">Investing for generations</span><h1>{headline}</h1><p>{tagline}</p>
       </motion.div>
       <motion.div className="hero-reveal" style={reduced ? {} : { opacity: revealOpacity, scale: revealScale }} inert={hydrated && !accessible && !reduced}>
-        <div className="reveal-intro"><span className="eyebrow">Investing for generations</span><h2>Start with <br />a conversation.</h2><p>Take 15 minutes to meet your team and share your financial goals.</p><a className="text-link" href="/start-here">What to expect <span aria-hidden="true">↗</span></a></div>
+        <div className="reveal-intro"><span className="eyebrow">Investing for generations</span><h2>Start with a<br />conversation.</h2><p>Take 15 minutes to meet your team and share your financial goals.</p><a className="text-link" href="/start-here">What to expect <span aria-hidden="true">↗</span></a></div>
         <div className="reveal-form"><ContactForm email={email} compact /></div>
       </motion.div>
       <div className="hero-gallery" aria-hidden="true">{gallery.map((photo, index) => <BentoCell key={index} photo={photo} index={index} progress={scrollYProgress} compact={compact} />)}</div>

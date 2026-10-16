@@ -1,0 +1,120 @@
+/* Graham's September site review: readable type, consistent links, and clearer layouts. */
+body { font-size: 16px; }
+.desktop-nav { font-size: 16px; gap: 18px; }
+.nav-group { position: relative; gap: 0; }
+.nav-group details { position: static; }
+.nav-group > a { display: inline-flex; align-items: center; min-height: 44px; }
+.nav-group summary { justify-content: center; min-width: 40px; min-height: 44px; gap: 0; }
+.nav-group:not(:has(> a)) summary { padding: 0 12px; gap: 12px; }
+.nav-group .chevron { display: inline-block; width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg) translateY(-2px); font-size: 0; }
+.nav-group .nav-dropdown { top: 100%; left: 0; margin: 0; min-width: 245px; }
+.nav-group:not(:has(> a)) .nav-dropdown { left: 0; }
+.nav-dropdown a { font-size: 16px; }
+.header-cta, .button, .text-link { font-family: 'Work Sans', sans-serif; font-size: 16px; }
+.text-link { color: var(--red); border-color: var(--red); }
+.eyebrow, .hero-kicker { font-family: 'Work Sans', sans-serif; font-size: 16px; letter-spacing: .02em; text-transform: none; }
+.scroll-cue, .hero-cover-copy p, .reveal-intro p { font-size: 16px; }
+.reveal-intro h2 { font-size: clamp(2.7rem, 4.5vw, 5rem); }
+.reveal-intro h2 br { display: block; }
+.contact-form { gap: 16px; }
+.contact-form label, .contact-form input, .contact-form textarea, .form-note { font-size: 16px; }
+.contact-form input { min-height: 44px; }
+.contact-form textarea { min-height: 72px; }
+.contact-form .button { margin-top: 4px; }
+.onboarding-icon { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; font-size: 28px; line-height: 1; }
+.onboarding-icon::before { content: '+'; }
+.onboarding details[open] .onboarding-icon { transform: none; }
+.onboarding details[open] .onboarding-icon::before { content: '×'; }
+
+/* Minimum reading size for editorial content and supplementary copy. */
+.difference-list p, .family-copy p, .family-copy ul, .season p, .investing-intro,
+.investment-detail li, .onboarding p, .philosophy-section > p, .small-print,
+.insight-list time, .advisor-section p, .source-video > p,
+.post-card p, .post-card time, .page-content p, .page-content li,
+.quiz-launch-note, .related-links a, .breadcrumb, .article-meta,
+.site-footer p, .site-footer a, .site-footer span, .site-footer h2,
+.contact-panel > p, .contact-details dt, .contact-details dd { font-size: max(16px, 1rem); }
+.site-footer .footer-name { font-size: 23px; }
+.site-footer .footer-wordmark { font-size: clamp(3rem, 6vw, 6rem); }
+.site-footer .footer-legal { line-height: 1.6; }
+.contact-details dt { text-transform: none; letter-spacing: 0; }
+.post-card .text-link { color: var(--red); border-color: var(--red); }
+.simple-page-hero nav, html body .simple-page-hero nav a { font-size: 16px; }
+.approach-editorial .approach-intro p:has(a), .approach-editorial .approach-intro p:has(strong > em) { font-size: 16px; }
+.approach-editorial .approach-section a, .approach-editorial .approach-navigation a { font-family: 'Work Sans', sans-serif; }
+.article-back, .article-byline, .article-sidebar, .article-sidebar li a,
+.article-figure figcaption, .article-resources li, .article-adjacent > a > span:first-child,
+.start-editorial .fit-heading > p, .start-editorial .start-fit li,
+.start-editorial .process-intro, .start-editorial .start-process li { font-size: 16px; }
+.values-section li, html body main .contact-editorial .contact-panel > p,
+html body main .values-section .button, html body main .advisor-section .text-link,
+html body .site-footer .footer-top .button { font-size: 16px; }
+
+/* Seasons: one hierarchy and one bullet treatment across all cards. */
+.season-editorial-cards article { padding-bottom: 32px; }
+.season-card-image img { width: 100%; height: 270px; object-fit: cover; margin: 0 0 24px; }
+.season-card-heading { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.season-editorial-cards .season-card-heading h3 { margin: 0; font-size: 32px; line-height: 1.15; }
+.season-editorial-cards .season-card-subtitle { margin: 10px 0 0; font: 22px/1.3 'Work Sans', sans-serif; color: var(--ink); }
+.season-editorial-cards .season-card-heading a { flex-shrink: 0; display: inline-flex; align-items: center; gap: 8px; margin-top: 7px; font: 16px/1.4 'Work Sans', sans-serif; color: var(--red); text-decoration: underline; text-underline-offset: 5px; text-align: right; }
+.season-card-heading a span { font-size: 20px; text-decoration: none; }
+.season-editorial-cards .season-card-summary { font-size: 16px; line-height: 1.7; color: var(--muted); margin: 18px 0; }
+.season-card-points { list-style: none; padding: 0; margin: 20px 0 0; }
+.season-card-points li { position: relative; padding: 8px 0 8px 22px; font-size: 16px; line-height: 1.5; border-top: 1px solid var(--line); }
+.season-card-points li::before { content: '—'; position: absolute; left: 0; color: var(--red); }
+.season-risk-note { margin-top: 30px; font-size: 16px; color: var(--muted); }
+.season-editorial .season-introduction a, .season-editorial .season-actions a,
+.season-editorial .season-values a, .season-editorial .season-navigation a { font-family: 'Work Sans', sans-serif; font-size: 16px; }
+.season-editorial .season-actions p, .season-editorial .season-values p,
+.season-editorial .season-priorities li, .season-editorial .season-audience li { font-size: 16px; }
+.season-audience li { position: relative; padding-left: 22px; }
+.season-audience li::before { content: '—'; position: absolute; left: 0; color: var(--red); }
+.season-editorial-cards .season-card-heading h3 { font-weight: 500; }
+
+/* Approach: more breathing room around the numbered sections. */
+.approach-editorial .approach-sections { column-gap: 7%; row-gap: 44px; }
+.approach-editorial .approach-section p, .approach-editorial .approach-section li,
+.approach-editorial .approach-section a, .approach-editorial .approach-intro a,
+.approach-editorial .approach-navigation a, .approach-editorial .approach-number { font-size: 16px; }
+.approach-overview .approach-section:first-child { padding-bottom: 56px; }
+.approach-overview .approach-section:first-child .approach-photo img { height: 320px; }
+.approach-overview .approach-section.is-onboarding { grid-column: 1 / -1; padding: 48px; margin-top: 24px; background: var(--light); }
+.approach-overview .approach-section.is-onboarding .approach-section-copy { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 8px 8%; }
+.approach-overview .approach-section.is-onboarding .approach-section-copy > div { grid-column: 2; grid-row: 1 / 3; }
+.approach-overview .approach-section.is-onboarding .approach-section-copy h2 { grid-column: 1; }
+
+/* Our Story uses the same flush editorial rhythm as the other pages. */
+.story-content > p, .story-content > h2, .story-content > h3 { text-indent: 0; margin-left: 0; }
+.story-content ul { list-style: none; padding-left: 0; }
+.story-content li { position: relative; padding: 8px 0 8px 22px; border-top: 1px solid var(--line); }
+.story-content li::before { content: '—'; position: absolute; left: 0; color: var(--red); }
+
+@media (max-width: 1150px) { .desktop-nav { gap: 12px; } }
+@media (max-width: 760px) {
+  .mobile-nav summary, .mobile-nav nav a, .mobile-nav nav a.sub-link { font-size: 16px; }
+  .hero-kicker, .eyebrow, .scroll-cue { font-size: 16px; }
+  .reveal-intro h2 { font-size: clamp(2.1rem, 8vw, 3rem); }
+  .reveal-intro h2 br { display: block; }
+  .reveal-intro p, .compact label, .compact input, .compact textarea,
+  .compact .button, .contact-form .form-note { font-size: 16px; }
+  .hero-reveal { align-content: start; gap: 16px; }
+  .compact { gap: 12px; }
+  .compact input { min-height: 44px; }
+  .compact textarea { min-height: 72px; }
+  .season-card-heading { display: block; }
+  .season-editorial-cards .season-card-heading a { text-align: left; margin-top: 14px; }
+  .approach-overview .approach-section.is-onboarding { padding: 26px; }
+  .approach-overview .approach-section.is-onboarding .approach-section-copy { display: block; }
+}
+@media (max-width: 640px) {
+  .hero-scroll { height: auto; margin-top: 0; padding-top: 0; }
+  .hero-stage { position: relative; top: 0; height: auto; min-height: 0; display: flex; flex-direction: column; overflow: visible; }
+  .hero-gallery { position: relative; inset: auto; order: 0; height: 78svh; min-height: 530px; margin: 7px; flex-shrink: 0; }
+  .gallery-cell { transform: none !important; }
+  .hero-cover-copy { top: 15svh; opacity: 1 !important; }
+  .hero-reveal { order: 1; width: 100%; height: auto; min-height: 0; opacity: 1 !important; transform: none !important; overflow: visible; padding: 42px 7% 54px; }
+  .reveal-intro .eyebrow { display: block; }
+  .reveal-intro .text-link { display: inline-flex; margin-top: 20px; }
+  .scroll-cue { display: none; }
+  .connect-anchor { top: 78svh; }
+}
