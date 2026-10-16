@@ -6,15 +6,16 @@ const reference=process.env.REFERENCE_URL || 'https://redbarn-preview.91.98.31.1
 const candidate=process.env.CANDIDATE_URL || 'http://127.0.0.1:4322';
 const output=process.env.QA_OUTPUT || 'test-results/emdash-visual';await fs.mkdir(output,{recursive:true});
 const seed=JSON.parse(await fs.readFile('seed/red-barn.json','utf8'));
-const routes=['/','/insights',...seed.content.pages.map(p=>'/'+p.slug),...seed.content.posts.map(p=>'/insights/'+p.slug)];
+const allRoutes=['/','/insights',...seed.content.pages.map(p=>'/'+p.slug),...seed.content.posts.map(p=>'/insights/'+p.slug)];
+const routes=process.env.QA_ROUTES ? allRoutes.filter(r=>process.env.QA_ROUTES.split(',').includes(r)) : allRoutes;
 const browser=await chromium.launch({channel:'chrome',headless:true,args:['--disable-gpu','--force-color-profile=srgb']});const report=[];
 try {
  for(const width of [1440,390]) {
-  const context=await browser.newContext({viewport:{width,height:width===390?844:1000},deviceScaleFactor:1,locale:'en-CA',timezoneId:'America/Edmonton',reducedMotion:'reduce'});
-  const page=await context.newPage();
+  const contextOptions={viewport:{width,height:width===390?844:1000},deviceScaleFactor:1,locale:'en-CA',timezoneId:'America/Edmonton',reducedMotion:'reduce'};
   for(const route of routes) {
    const errors=[];
    const buffers=[];for(let i=0;i<2;i++){
+    const context=await browser.newContext(contextOptions);const page=await context.newPage();
     const response=await page.goto((i?candidate:reference)+route,{waitUntil:'networkidle'});
     if(response.status()!==200)errors.push(`${i?'candidate':'reference'} HTTP ${response.status()}`);
     await page.evaluate(async()=>{
@@ -25,7 +26,10 @@ try {
     });
     await page.screenshot({fullPage:true,animations:'disabled'});
     await page.waitForTimeout(600);
+    const broken=await page.evaluate(()=>[...document.images].filter(img=>!img.complete || !img.naturalWidth).map(img=>img.currentSrc || img.src));
+    if(broken.length)errors.push(`${i?'candidate':'reference'} unloaded images: ${broken.join(', ')}`);
     buffers.push(await page.screenshot({fullPage:true,animations:'disabled'}));
+    await context.close();
    }
    const decoded=await Promise.all(buffers.map(b=>sharp(b).ensureAlpha().raw().toBuffer({resolveWithObject:true})));
    const [a,b]=decoded;let changedPixels=0,maxDifference=0;
@@ -35,7 +39,6 @@ try {
    if(!equalSize||changedPixels||errors.length){const name=`${width}-${route.replaceAll('/','_')||'home'}`;await fs.writeFile(path.join(output,name+'-reference.png'),buffers[0]);await fs.writeFile(path.join(output,name+'-emdash.png'),buffers[1]);}
    console.log(JSON.stringify({route,width,equalSize,changedPixels,maxDifference,errors}));
   }
-  await context.close();
  }
 } finally {await browser.close();await fs.writeFile(path.join(output,'report.json'),JSON.stringify(report,null,2));}
 if(report.some(r=>!r.equalSize||r.changedPixels||r.errors.length))process.exitCode=1;
